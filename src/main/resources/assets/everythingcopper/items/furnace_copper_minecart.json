@@ -1,6 +1,34 @@
 {
 	"model": {
-		"type": "minecraft:model",
-		"model": "everythingcopper:item/furnace_copper_minecart"
+		"type": "minecraft:select",
+		"property": "minecraft:component",
+		"component": "everythingcopper:oxidation_state",
+		"cases": [
+			{
+				"when": "exposed",
+				"model": {
+					"type": "minecraft:model",
+					"model": "everythingcopper:item/exposed_furnace_copper_minecart"
+				}
+			},
+			{
+				"when": "weathered",
+				"model": {
+					"type": "minecraft:model",
+					"model": "everythingcopper:item/weathered_furnace_copper_minecart"
+				}
+			},
+			{
+				"when": "oxidized",
+				"model": {
+					"type": "minecraft:model",
+					"model": "everythingcopper:item/oxidized_furnace_copper_minecart"
+				}
+			}
+		],
+		"fallback": {
+			"type": "minecraft:model",
+			"model": "everythingcopper:item/furnace_copper_minecart"
+		}
 	}
 }

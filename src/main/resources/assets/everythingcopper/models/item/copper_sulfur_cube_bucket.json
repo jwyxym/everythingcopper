@@ -1,0 +1,6 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "everythingcopper:item/bucket/copper_sulfur_cube_bucket"
+	}
+}

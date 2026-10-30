@@ -1,6 +1,7 @@
 package cy.jdkdigital.everythingcopper.common.item;
 
 import cy.jdkdigital.everythingcopper.init.ModItems;
+import cy.jdkdigital.everythingcopper.util.CopperItemVariants;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,6 +13,7 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.LiquidBlockContainer;
@@ -22,7 +24,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
-public class CopperBucketItem extends BucketItem {
+public class CopperBucketItem extends BucketItem implements ICopperBucket {
 	public CopperBucketItem(Fluid content, Properties properties) {
 		super(content, properties);
 	}
@@ -42,8 +44,13 @@ public class CopperBucketItem extends BucketItem {
 
 	@Override
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+		return useContents(this, level, player, hand);
+	}
+
+	public static InteractionResult useContents(BucketItem bucket, Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		BlockHitResult hit = getPlayerPOVHitResult(level, player, getFluidContext());
+		Fluid content = bucket.getContent();
+		BlockHitResult hit = getPlayerPOVHitResult(level, player, bucket.getFluidContext());
 		if (hit.getType() != HitResult.Type.BLOCK) {
 			return InteractionResult.PASS;
 		}
@@ -53,7 +60,7 @@ public class CopperBucketItem extends BucketItem {
 			return InteractionResult.FAIL;
 		}
 		BlockState state = level.getBlockState(pos);
-		if (content == Fluids.EMPTY) {
+		if (content == Fluids.EMPTY && !(bucket instanceof MobBucketItem)) {
 			if (!(state.getBlock() instanceof BucketPickup pickup)) {
 				return InteractionResult.FAIL;
 			}
@@ -61,7 +68,8 @@ public class CopperBucketItem extends BucketItem {
 			if (filled.isEmpty()) {
 				return InteractionResult.FAIL;
 			}
-			player.awardStat(Stats.ITEM_USED.get(this));
+			filled = CopperItemVariants.copyState(stack, filled);
+			player.awardStat(Stats.ITEM_USED.get(bucket));
 			pickup.getPickupSound(state).ifPresent(sound -> player.playSound(sound, 1.0F, 1.0F));
 			level.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
 			if (player instanceof ServerPlayer serverPlayer) {
@@ -70,15 +78,15 @@ public class CopperBucketItem extends BucketItem {
 			return InteractionResult.SUCCESS.heldItemTransformedTo(ItemUtils.createFilledResult(stack, player, filled));
 		}
 		BlockPos target = state.getBlock() instanceof LiquidBlockContainer && content == Fluids.WATER ? pos : adjacent;
-		if (!emptyContents(player, level, target, hit)) {
+		if (!bucket.emptyContents(player, level, target, hit)) {
 			return InteractionResult.FAIL;
 		}
-		checkExtraContent(player, level, stack, target);
-		if (player instanceof ServerPlayer serverPlayer) {
+		bucket.checkExtraContent(player, level, stack, target);
+		if (content != Fluids.EMPTY && player instanceof ServerPlayer serverPlayer) {
 			CriteriaTriggers.PLACED_BLOCK.trigger(serverPlayer, target, stack);
 		}
-		player.awardStat(Stats.ITEM_USED.get(this));
-		ItemStack empty = player.hasInfiniteMaterials() ? stack : new ItemStack(ModItems.COPPER_BUCKET.get());
+		player.awardStat(Stats.ITEM_USED.get(bucket));
+		ItemStack empty = player.hasInfiniteMaterials() ? stack : CopperItemVariants.copyState(stack, new ItemStack(ModItems.COPPER_BUCKET.get()));
 		return InteractionResult.SUCCESS.heldItemTransformedTo(ItemUtils.createFilledResult(stack, player, empty));
 	}
 }

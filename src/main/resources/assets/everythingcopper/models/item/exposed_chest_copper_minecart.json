@@ -1,0 +1,6 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "everythingcopper:item/exposed_chest_copper_minecart"
+	}
+}

@@ -3,6 +3,10 @@ package cy.jdkdigital.everythingcopper.event;
 import cy.jdkdigital.everythingcopper.EverythingCopper;
 import cy.jdkdigital.everythingcopper.common.item.ICopperItem;
 import cy.jdkdigital.everythingcopper.util.WeatheringUtils;
+import cy.jdkdigital.everythingcopper.util.CopperItemVariants;
+import cy.jdkdigital.everythingcopper.init.ModItems;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.component.UseRemainder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -64,6 +68,10 @@ public class CopperEquipmentEvents {
 			stack.set(DataComponents.ITEM_NAME, Component.translatable("item.everythingcopper." + prefix + age + "_" + path));
 		}
 		Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
+		if (stack.is(ModItems.COPPER_MILK_BUCKET.get())) {
+			ItemStack empty = CopperItemVariants.copyState(stack, new ItemStack(ModItems.COPPER_BUCKET.get()));
+			stack.set(DataComponents.USE_REMAINDER, new UseRemainder(ItemStackTemplate.fromNonEmptyStack(empty)));
+		}
 		if (equippable != null) {
 			ResourceKey<EquipmentAsset> asset = age.equals("unaffected") ? EquipmentAssets.COPPER
 				: ResourceKey.create(EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(EverythingCopper.MODID, age + "_copper"));

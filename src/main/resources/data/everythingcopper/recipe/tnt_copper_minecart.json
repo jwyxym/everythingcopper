@@ -1,10 +1,7 @@
 {
-	"type": "minecraft:crafting_shapeless",
-	"category": "misc",
-	"ingredients": [
-		"everythingcopper:copper_minecart",
-		"minecraft:tnt"
-	],
+	"type": "everythingcopper:minecart_upgrade",
+	"item": "everythingcopper:copper_minecart",
+	"addition": "minecraft:tnt",
 	"result": {
 		"id": "everythingcopper:tnt_copper_minecart"
 	}

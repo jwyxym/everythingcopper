@@ -3,6 +3,10 @@ package cy.jdkdigital.everythingcopper.integration;
 import cy.jdkdigital.everythingcopper.EverythingCopper;
 import cy.jdkdigital.everythingcopper.common.item.ICopperItem;
 import cy.jdkdigital.everythingcopper.crafting.recipe.ScrapeRecipe;
+import cy.jdkdigital.everythingcopper.crafting.recipe.CopperMinecartUpgradeRecipe;
+import cy.jdkdigital.everythingcopper.common.item.CopperMobBucketItem;
+import net.neoforged.neoforge.common.Tags;
+import java.util.Map;
 import cy.jdkdigital.everythingcopper.crafting.recipe.WaxOnRecipe;
 import cy.jdkdigital.everythingcopper.crafting.recipe.WeatheringRecipe;
 import cy.jdkdigital.everythingcopper.init.ModTags;
@@ -12,6 +16,7 @@ import cy.jdkdigital.everythingcopper.util.WeatheringUtils;
 import cy.jdkdigital.everythingcopper.util.CopperItemVariants;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.recipe.vanilla.IJeiShapedRecipeBuilder;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -48,7 +53,7 @@ public class JeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registration) {
-		for (Item item : CopperItemVariants.equipment()) {
+		for (Item item : CopperItemVariants.weatheringItems()) {
 			// Normalize absent components to their default values; damage and custom names do not change a recipe.
 			registration.registerSubtypeInterpreter(item, (stack, context) -> ICopperItem.getAge(stack) + ":" + ICopperItem.isWaxed(stack));
 		}
@@ -61,10 +66,13 @@ public class JeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
-		registration.addIngredientInfo(ModItems.COPPER_WATER_BUCKET.get(), Component.translatable("everythingcopper.bucket.water"));
-		registration.addIngredientInfo(ModItems.COPPER_LAVA_BUCKET.get(), Component.translatable("everythingcopper.bucket.lava"));
-		registration.addIngredientInfo(ModItems.COPPER_POWDER_SNOW_BUCKET.get(), Component.translatable("everythingcopper.bucket.powder_snow"));
-		registration.addIngredientInfo(ModItems.COPPER_MILK_BUCKET.get(), Component.translatable("everythingcopper.bucket.milk"));
+		registration.addIngredientInfo(CopperItemVariants.all(ModItems.COPPER_WATER_BUCKET.get()), VanillaTypes.ITEM_STACK, Component.translatable("everythingcopper.bucket.water"));
+		registration.addIngredientInfo(CopperItemVariants.all(ModItems.COPPER_LAVA_BUCKET.get()), VanillaTypes.ITEM_STACK, Component.translatable("everythingcopper.bucket.lava"));
+		registration.addIngredientInfo(CopperItemVariants.all(ModItems.COPPER_POWDER_SNOW_BUCKET.get()), VanillaTypes.ITEM_STACK, Component.translatable("everythingcopper.bucket.powder_snow"));
+		registration.addIngredientInfo(CopperItemVariants.all(ModItems.COPPER_MILK_BUCKET.get()), VanillaTypes.ITEM_STACK, Component.translatable("everythingcopper.bucket.milk"));
+		for (Item bucket : CopperItemVariants.buckets()) {
+			if (bucket instanceof CopperMobBucketItem) registration.addIngredientInfo(CopperItemVariants.all(bucket), VanillaTypes.ITEM_STACK, Component.translatable("everythingcopper.bucket.creature"));
+		}
 		List<WeatheringRecipe> weathering = new ArrayList<>();
 		BuiltInRegistries.BLOCK.forEach(block -> {
 			if (block instanceof WeatheringCopper copper && block.asItem() != Items.AIR) {
@@ -76,7 +84,7 @@ public class JeiPlugin implements IModPlugin {
 				});
 			}
 		});
-		for (Item item : CopperItemVariants.equipment()) {
+		for (Item item : CopperItemVariants.weatheringItems()) {
 			ItemStack input = item.getDefaultInstance();
 			while (ICopperItem.canAge(input)) {
 				ItemStack output = input.copy();
@@ -88,12 +96,39 @@ public class JeiPlugin implements IModPlugin {
 		}
 		registration.addRecipes(WEATHERING_RECIPE_TYPE, weathering);
 		registerTreatmentRecipes(registration);
+		registerMinecartUpgrades(registration);
+	}
+
+	private static void registerMinecartUpgrades(IRecipeRegistration registration) {
+		Ingredient input = Ingredient.of(ModItems.COPPER_MINECART.get());
+		Map<Item, Ingredient> upgrades = Map.of(
+			ModItems.COPPER_CHEST_MINECART.get(), Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(Tags.Items.CHESTS)),
+			ModItems.COPPER_FURNACE_MINECART.get(), Ingredient.of(Items.FURNACE),
+			ModItems.COPPER_HOPPER_MINECART.get(), Ingredient.of(Items.HOPPER),
+			ModItems.COPPER_TNT_MINECART.get(), Ingredient.of(Items.TNT));
+		List<RecipeHolder<CraftingRecipe>> recipes = new ArrayList<>();
+		for (Map.Entry<Item, Ingredient> entry : upgrades.entrySet()) {
+			Ingredient addition = entry.getValue();
+			if (addition.isEmpty()) continue;
+			ItemStack material = addition.items().findFirst().orElseThrow().value().getDefaultInstance();
+			CopperMinecartUpgradeRecipe recipe = new CopperMinecartUpgradeRecipe(input, addition, entry.getKey().getDefaultInstance());
+			for (ItemStack cart : CopperItemVariants.all(ModItems.COPPER_MINECART.get())) {
+				ItemStack output = recipe.assemble(CraftingInput.of(2, 1, List.of(cart, material)));
+				CraftingRecipe display = registration.getVanillaRecipeFactory()
+					.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(output)))
+					.define('C', input, new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(cart)))
+					.define('A', addition, addition.display()).pattern("A").pattern("C").build();
+				Identifier id = displayId("minecart_upgrade", BuiltInRegistries.ITEM.getKey(entry.getKey()), "/" + ICopperItem.getAge(cart) + "/" + ICopperItem.isWaxed(cart));
+				recipes.add(new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), display));
+			}
+		}
+		registration.addRecipes(RecipeTypes.CRAFTING, recipes);
 	}
 
 	private static void registerTreatmentRecipes(IRecipeRegistration registration) {
 		List<RecipeHolder<CraftingRecipe>> recipes = new ArrayList<>();
 		Ingredient wax = Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.WAXING_ITEMS));
-		for (Item item : CopperItemVariants.equipment()) {
+		for (Item item : CopperItemVariants.weatheringItems()) {
 			Ingredient ingredient = Ingredient.of(item);
 			WaxOnRecipe waxOn = new WaxOnRecipe(ingredient, wax);
 			ScrapeRecipe scrape = new ScrapeRecipe(ingredient);

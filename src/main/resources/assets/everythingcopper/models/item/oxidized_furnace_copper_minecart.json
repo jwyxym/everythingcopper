@@ -1,0 +1,6 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "everythingcopper:item/oxidized_furnace_copper_minecart"
+	}
+}

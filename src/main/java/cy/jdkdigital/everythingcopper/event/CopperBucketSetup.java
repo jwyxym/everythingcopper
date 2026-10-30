@@ -3,6 +3,9 @@ package cy.jdkdigital.everythingcopper.event;
 import cy.jdkdigital.everythingcopper.EverythingCopper;
 import cy.jdkdigital.everythingcopper.common.item.CopperBucketItem;
 import cy.jdkdigital.everythingcopper.init.ModItems;
+import cy.jdkdigital.everythingcopper.util.CopperItemVariants;
+import cy.jdkdigital.everythingcopper.common.item.CopperMobBucketItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteractions;
 import net.minecraft.core.dispenser.BlockSource;
@@ -44,13 +47,13 @@ public class CopperBucketSetup {
 				emptyCauldronBucket(level, pos, player, hand, stack, Blocks.POWDER_SNOW_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3), SoundEvents.BUCKET_EMPTY_POWDER_SNOW));
 		}
 		event.register(Identifier.withDefaultNamespace("water"), ModItems.COPPER_BUCKET.get(), (state, level, pos, player, hand, stack) ->
-			CauldronInteractions.fillBucket(state, level, pos, player, hand, stack, new ItemStack(ModItems.COPPER_WATER_BUCKET.get()),
+			CauldronInteractions.fillBucket(state, level, pos, player, hand, stack, CopperItemVariants.copyState(stack, new ItemStack(ModItems.COPPER_WATER_BUCKET.get())),
 				block -> block.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BUCKET_FILL));
 		event.register(Identifier.withDefaultNamespace("lava"), ModItems.COPPER_BUCKET.get(), (state, level, pos, player, hand, stack) ->
-			CauldronInteractions.fillBucket(state, level, pos, player, hand, stack, new ItemStack(ModItems.COPPER_LAVA_BUCKET.get()),
+			CauldronInteractions.fillBucket(state, level, pos, player, hand, stack, CopperItemVariants.copyState(stack, new ItemStack(ModItems.COPPER_LAVA_BUCKET.get())),
 				block -> true, SoundEvents.BUCKET_FILL_LAVA));
 		event.register(Identifier.withDefaultNamespace("powder_snow"), ModItems.COPPER_BUCKET.get(), (state, level, pos, player, hand, stack) ->
-			CauldronInteractions.fillBucket(state, level, pos, player, hand, stack, new ItemStack(ModItems.COPPER_POWDER_SNOW_BUCKET.get()),
+			CauldronInteractions.fillBucket(state, level, pos, player, hand, stack, CopperItemVariants.copyState(stack, new ItemStack(ModItems.COPPER_POWDER_SNOW_BUCKET.get())),
 				block -> block.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BUCKET_FILL_POWDER_SNOW));
 	}
 
@@ -58,7 +61,7 @@ public class CopperBucketSetup {
 		if (!level.isClientSide()) {
 			player.awardStat(Stats.FILL_CAULDRON);
 			player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
-			player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, new ItemStack(ModItems.COPPER_BUCKET.get())));
+			player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, CopperItemVariants.copyState(stack, new ItemStack(ModItems.COPPER_BUCKET.get()))));
 			level.setBlockAndUpdate(pos, filled);
 			level.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
 			level.gameEvent(player, GameEvent.FLUID_PLACE, pos);
@@ -78,12 +81,17 @@ public class CopperBucketSetup {
 						return super.execute(source, stack);
 					}
 					container.checkExtraContent(null, source.level(), stack, pos);
-					return consumeWithRemainder(source, stack, new ItemStack(ModItems.COPPER_BUCKET.get()));
+					return consumeWithRemainder(source, stack, CopperItemVariants.copyState(stack, new ItemStack(ModItems.COPPER_BUCKET.get())));
 				}
 			};
 			DispenserBlock.registerBehavior(ModItems.COPPER_WATER_BUCKET.get(), filled);
 			DispenserBlock.registerBehavior(ModItems.COPPER_LAVA_BUCKET.get(), filled);
 			DispenserBlock.registerBehavior(ModItems.COPPER_POWDER_SNOW_BUCKET.get(), filled);
+			for (Item bucket : CopperItemVariants.buckets()) {
+				if (bucket instanceof CopperMobBucketItem) {
+					DispenserBlock.registerBehavior(bucket, filled);
+				}
+			}
 			DispenserBlock.registerBehavior(ModItems.COPPER_BUCKET.get(), new DefaultDispenseItemBehavior() {
 				@Override
 				protected ItemStack execute(BlockSource source, ItemStack stack) {
@@ -93,7 +101,7 @@ public class CopperBucketSetup {
 						ItemStack contents = CopperBucketItem.copperContents(pickup.pickupBlock(null, source.level(), pos, state));
 						if (!contents.isEmpty()) {
 							source.level().gameEvent(null, GameEvent.FLUID_PICKUP, pos);
-							return consumeWithRemainder(source, stack, contents);
+							return consumeWithRemainder(source, stack, CopperItemVariants.copyState(stack, contents));
 						}
 					}
 					return super.execute(source, stack);

@@ -2,6 +2,7 @@ package cy.jdkdigital.everythingcopper.init;
 
 import cy.jdkdigital.everythingcopper.EverythingCopper;
 import cy.jdkdigital.everythingcopper.crafting.recipe.ScrapeRecipe;
+import cy.jdkdigital.everythingcopper.crafting.recipe.CopperMinecartUpgradeRecipe;
 import cy.jdkdigital.everythingcopper.crafting.recipe.WaxOnRecipe;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -17,4 +18,5 @@ public final class ModRecipeTypes
 
 	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<WaxOnRecipe>> WAX_ON = RECIPE_SERIALIZERS.register("wax_on", () -> new RecipeSerializer<>(WaxOnRecipe.CODEC, WaxOnRecipe.STREAM_CODEC));
 	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ScrapeRecipe>> SCRAPE = RECIPE_SERIALIZERS.register("scrape", () -> new RecipeSerializer<>(ScrapeRecipe.CODEC, ScrapeRecipe.STREAM_CODEC));
+	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CopperMinecartUpgradeRecipe>> MINECART_UPGRADE = RECIPE_SERIALIZERS.register("minecart_upgrade", () -> new RecipeSerializer<>(CopperMinecartUpgradeRecipe.CODEC, CopperMinecartUpgradeRecipe.STREAM_CODEC));
 }

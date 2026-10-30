@@ -1,6 +1,34 @@
 {
 	"model": {
-		"type": "minecraft:model",
-		"model": "everythingcopper:item/copper_lava_bucket"
+		"type": "minecraft:select",
+		"property": "minecraft:component",
+		"component": "everythingcopper:oxidation_state",
+		"cases": [
+			{
+				"when": "exposed",
+				"model": {
+					"type": "minecraft:model",
+					"model": "everythingcopper:item/bucket/exposed_copper_lava_bucket"
+				}
+			},
+			{
+				"when": "weathered",
+				"model": {
+					"type": "minecraft:model",
+					"model": "everythingcopper:item/bucket/weathered_copper_lava_bucket"
+				}
+			},
+			{
+				"when": "oxidized",
+				"model": {
+					"type": "minecraft:model",
+					"model": "everythingcopper:item/bucket/oxidized_copper_lava_bucket"
+				}
+			}
+		],
+		"fallback": {
+			"type": "minecraft:model",
+			"model": "everythingcopper:item/copper_lava_bucket"
+		}
 	}
 }

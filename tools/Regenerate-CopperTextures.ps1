@@ -14,6 +14,7 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 $ProjectRoot = [System.IO.Path]::GetFullPath($ProjectRoot)
 $textureRoot = Join-Path $ProjectRoot 'src/main/resources/assets/everythingcopper/textures'
 $normalPalette = @('421C11', '5F2C1C', '9C4E31', 'C15A36', 'D36F52', 'EA866B', 'FC9982', 'FDD4CB')
+$exposedPalette = @('421C11', '5F2C1C', '7F7257', 'A87762', '988C69', 'CE8D83', 'E6B2A5', 'FDD4CB')
 $patinaPalette = @('1C3D36', '28554A', '377363', '478F78', '5AAA8D', '74C5A5', 'A0E0C1', 'D3F5DE')
 $shadeBoundaries = @(24, 48, 76, 104, 136, 168, 208)
 $metalShades = @{}
@@ -55,7 +56,7 @@ function Get-PaletteColor {
 	return [System.Drawing.Color]::FromArgb($Pixel.A, ($rgb -shr 16) -band 255, ($rgb -shr 8) -band 255, $rgb -band 255)
 }
 
-function Save-CheckedTexture {
+function Save-TextureVariant {
 	param(
 		[System.Drawing.Bitmap]$Source,
 		[System.Drawing.Bitmap]$Output,
@@ -83,12 +84,43 @@ function Save-CheckedTexture {
 	$validation.Add([PSCustomObject]@{ Path = $RelativePath; Width = $Output.Width; Height = $Output.Height; ChangedPixels = $changed })
 }
 
+function Save-CheckedTexture {
+	param([System.Drawing.Bitmap]$Source, [System.Drawing.Bitmap]$Output, [bool[,]]$MetalMask, [string]$RelativePath)
+	Save-TextureVariant $Source $Output $MetalMask $RelativePath
+	$bucket = $RelativePath.StartsWith('item/bucket/')
+	$cart = $RelativePath -match '^item/[^/]*copper_minecart\.png$'
+	$entity = $RelativePath -eq 'entity/copper_minecart/unaffected.png'
+	if (!$bucket -and !$cart -and !$entity) { return }
+	foreach ($age in @('exposed', 'weathered', 'oxidized')) {
+		$variant = [System.Drawing.Bitmap]::new($Source)
+		try {
+			for ($y = 0; $y -lt $Source.Height; $y++) {
+				for ($x = 0; $x -lt $Source.Width; $x++) {
+					if (!$MetalMask[$x, $y]) { continue }
+					$pixel = $Source.GetPixel($x, $y)
+					$cellX = [int][Math]::Floor($x / 2)
+					$cellY = [int][Math]::Floor($y / 2)
+					$pattern = ($cellX * 37 + $cellY * 53 + $cellX * $cellY * 11 + 17) % 100
+					$palette = if ($age -eq 'exposed') { $exposedPalette } elseif ($age -eq 'oxidized' -or $pattern -lt 72) { $patinaPalette } else { $normalPalette }
+					$variant.SetPixel($x, $y, (Get-PaletteColor $pixel $palette))
+				}
+			}
+			$directory = [IO.Path]::GetDirectoryName($RelativePath)
+			$name = [IO.Path]::GetFileName($RelativePath)
+			$target = if ($entity) { "entity/copper_minecart/$age.png" } else { (Join-Path $directory ($age + '_' + $name)).Replace('\', '/') }
+			Save-TextureVariant $Source $variant $MetalMask $target
+		} finally {
+			$variant.Dispose()
+		}
+	}
+}
+
 try {
 	# Contents are precisely the vanilla differences from the empty bucket.
 	# Every shared container pixel uses the same copper color in every variant.
 	$emptyBucket = Read-OriginalTexture 'item/bucket'
 	try {
-		foreach ($name in @('bucket', 'water_bucket', 'lava_bucket', 'milk_bucket', 'powder_snow_bucket')) {
+		foreach ($name in @('bucket', 'water_bucket', 'lava_bucket', 'milk_bucket', 'powder_snow_bucket', 'axolotl_bucket', 'tadpole_bucket', 'cod_bucket', 'salmon_bucket', 'pufferfish_bucket', 'tropical_fish_bucket', 'sulfur_cube_bucket')) {
 			$source = Read-OriginalTexture "item/$name"
 			$output = [System.Drawing.Bitmap]::new($source)
 			$mask = [bool[,]]::new($source.Width, $source.Height)
@@ -162,6 +194,10 @@ try {
 							if ($pixel.A -eq 0 -or !$metalShades.ContainsKey($key)) { continue }
 							$mask[$x, $y] = $true
 							$canonicalX = if ($inHand -and $y -le 8) { 15 - $x } else { $x }
+							if ($age -eq 'exposed') {
+								$output.SetPixel($x, $y, (Get-PaletteColor $pixel $exposedPalette $metalShades[$key]))
+								continue
+							}
 							$cellX = [int][Math]::Floor($canonicalX / 2)
 							$cellY = [int][Math]::Floor($y / 2)
 							$pattern = ($cellX * 37 + $cellY * 53 + $cellX * $cellY * 11 + 17) % 100
@@ -207,6 +243,8 @@ $report = [ordered]@{
 	Generator = 'tools/Regenerate-CopperTextures.ps1'
 	Method = 'Original Minecraft pixels and alpha; fixed metal palettes; no image generation or resizing.'
 	CopperPalette = $normalPalette
+	ExposedPalette = $exposedPalette
+	ExposedReferences = @('item/exposed_copper_sword.png', 'item/exposed_copper_axe.png', 'item/exposed_copper_pickaxe.png')
 	PatinaPalette = $patinaPalette
 	Validation = 'Original dimensions and per-pixel alpha preserved; all non-metal pixels unchanged.'
 	Assets = @($validation)

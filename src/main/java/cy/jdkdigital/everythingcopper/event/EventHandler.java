@@ -3,6 +3,8 @@ package cy.jdkdigital.everythingcopper.event;
 import cy.jdkdigital.everythingcopper.EverythingCopper;
 import cy.jdkdigital.everythingcopper.init.ModBlocks;
 import cy.jdkdigital.everythingcopper.init.ModItems;
+import cy.jdkdigital.everythingcopper.common.item.CopperMobBucketItem;
+import cy.jdkdigital.everythingcopper.util.CopperItemVariants;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
@@ -18,6 +20,9 @@ public class EventHandler
 			event.accept(ModItems.COPPER_LAVA_BUCKET.get());
 			event.accept(ModItems.COPPER_POWDER_SNOW_BUCKET.get());
 			event.accept(ModItems.COPPER_MILK_BUCKET.get());
+			for (var bucket : CopperItemVariants.buckets()) {
+				if (bucket instanceof CopperMobBucketItem) event.accept(bucket);
+			}
         }
         if (event.getTabKey().equals(CreativeModeTabs.INGREDIENTS)) {
         }

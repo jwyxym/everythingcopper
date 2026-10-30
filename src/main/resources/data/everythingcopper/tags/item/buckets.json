@@ -5,6 +5,13 @@
 		"#everythingcopper:buckets/water",
 		"#everythingcopper:buckets/lava",
 		"#everythingcopper:buckets/powder_snow",
-		"#everythingcopper:buckets/milk"
+		"#everythingcopper:buckets/milk",
+		"#everythingcopper:buckets/axolotl",
+		"#everythingcopper:buckets/tadpole",
+		"#everythingcopper:buckets/cod",
+		"#everythingcopper:buckets/salmon",
+		"#everythingcopper:buckets/pufferfish",
+		"#everythingcopper:buckets/tropical_fish",
+		"#everythingcopper:buckets/sulfur_cube"
 	]
 }

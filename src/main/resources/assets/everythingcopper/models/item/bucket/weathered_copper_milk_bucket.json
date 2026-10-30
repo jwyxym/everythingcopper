@@ -1,0 +1,6 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "everythingcopper:item/bucket/weathered_copper_milk_bucket"
+	}
+}

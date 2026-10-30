@@ -1,10 +1,7 @@
 {
-	"type": "minecraft:crafting_shapeless",
-	"category": "misc",
-	"ingredients": [
-		"everythingcopper:copper_minecart",
-		"minecraft:hopper"
-	],
+	"type": "everythingcopper:minecart_upgrade",
+	"item": "everythingcopper:copper_minecart",
+	"addition": "minecraft:hopper",
 	"result": {
 		"id": "everythingcopper:hopper_copper_minecart"
 	}

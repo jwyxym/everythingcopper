@@ -28,14 +28,14 @@ public final class ModCreativeTabs {
 	}
 
 	private static void buildContents(CreativeModeTab.Output output) {
-		Set<Item> variantItems = new HashSet<>(CopperItemVariants.equipment());
+		Set<Item> variantItems = new HashSet<>(CopperItemVariants.weatheringItems());
 		ModItems.ITEMS.getEntries().forEach(holder -> {
 			if (!variantItems.contains(holder.get())) {
 				output.accept(holder.get());
 			}
 		});
 		output.accept(ModItems.COPPER_NUGGET.get());
-		for (Item item : CopperItemVariants.equipment()) {
+		for (Item item : CopperItemVariants.weatheringItems()) {
 			output.acceptAll(CopperItemVariants.all(item));
 		}
 		// These sets replace former mod registrations, so include their vanilla IDs as well.

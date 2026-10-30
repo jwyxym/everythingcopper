@@ -2,6 +2,8 @@ package cy.jdkdigital.everythingcopper.util;
 
 import cy.jdkdigital.everythingcopper.common.item.ICopperItem;
 import cy.jdkdigital.everythingcopper.init.ModItems;
+import cy.jdkdigital.everythingcopper.init.ModDataComponents;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.WeatheringCopper;
@@ -29,6 +31,32 @@ public final class CopperItemVariants {
 			ICopperItem.setWaxed(stack, true);
 		}
 		return stack;
+	}
+
+	public static List<Item> minecarts() {
+		return List.of(ModItems.COPPER_MINECART.get(), ModItems.COPPER_CHEST_MINECART.get(), ModItems.COPPER_FURNACE_MINECART.get(),
+			ModItems.COPPER_HOPPER_MINECART.get(), ModItems.COPPER_TNT_MINECART.get());
+	}
+
+	public static List<Item> buckets() {
+		return List.of(ModItems.COPPER_BUCKET.get(), ModItems.COPPER_WATER_BUCKET.get(), ModItems.COPPER_LAVA_BUCKET.get(),
+			ModItems.COPPER_POWDER_SNOW_BUCKET.get(), ModItems.COPPER_MILK_BUCKET.get(), ModItems.COPPER_AXOLOTL_BUCKET.get(),
+			ModItems.COPPER_TADPOLE_BUCKET.get(), ModItems.COPPER_COD_BUCKET.get(), ModItems.COPPER_SALMON_BUCKET.get(),
+			ModItems.COPPER_PUFFERFISH_BUCKET.get(), ModItems.COPPER_TROPICAL_FISH_BUCKET.get(), ModItems.COPPER_SULFUR_CUBE_BUCKET.get());
+	}
+
+	public static List<Item> weatheringItems() {
+		List<Item> items = new ArrayList<>(equipment());
+		items.addAll(minecarts());
+		items.addAll(buckets());
+		return items;
+	}
+
+	public static ItemStack copyState(ItemInstance from, ItemStack target) {
+		String age = from.get(ModDataComponents.OXIDATION_STATE.get());
+		ICopperItem.setAge(target, age == null ? "unaffected" : age);
+		ICopperItem.setWaxed(target, Boolean.TRUE.equals(from.get(ModDataComponents.WAXED.get())));
+		return target;
 	}
 
 	public static List<ItemStack> all(Item item) {

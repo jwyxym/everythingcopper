@@ -1,10 +1,7 @@
 {
-	"type": "minecraft:crafting_shapeless",
-	"category": "misc",
-	"ingredients": [
-		"everythingcopper:copper_minecart",
-		"minecraft:furnace"
-	],
+	"type": "everythingcopper:minecart_upgrade",
+	"item": "everythingcopper:copper_minecart",
+	"addition": "minecraft:furnace",
 	"result": {
 		"id": "everythingcopper:furnace_copper_minecart"
 	}

@@ -2,7 +2,7 @@
 	"required": true,
 	"package": "cy.jdkdigital.everythingcopper.mixin.client",
 	"compatibilityLevel": "JAVA_25",
-	"client": ["MinecartRendererMixin"],
+	"client": ["MinecartRendererMixin", "MinecartRenderStateMixin"],
 	"injectors": {
 		"defaultRequire": 1
 	}
