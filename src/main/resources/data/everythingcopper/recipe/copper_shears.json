@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"group": "everythingcopper",
+	"pattern": [
+		"i ",
+		" i"
+	],
+	"key": {
+		"i": "#c:ingots/copper"
+	},
+	"result": {
+		"id": "everythingcopper:copper_shears",
+		"count": 1
+	}
+}

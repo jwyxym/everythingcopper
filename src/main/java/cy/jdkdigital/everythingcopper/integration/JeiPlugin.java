@@ -5,25 +5,33 @@ import cy.jdkdigital.everythingcopper.common.item.ICopperItem;
 import cy.jdkdigital.everythingcopper.crafting.recipe.ScrapeRecipe;
 import cy.jdkdigital.everythingcopper.crafting.recipe.WaxOnRecipe;
 import cy.jdkdigital.everythingcopper.crafting.recipe.WeatheringRecipe;
-import cy.jdkdigital.everythingcopper.init.ModBlocks;
 import cy.jdkdigital.everythingcopper.init.ModTags;
+import cy.jdkdigital.everythingcopper.init.ModItems;
+import net.minecraft.network.chat.Component;
 import cy.jdkdigital.everythingcopper.util.WeatheringUtils;
 import cy.jdkdigital.everythingcopper.util.CopperItemVariants;
 import mezz.jei.api.IModPlugin;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.types.IRecipeType;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.recipe.vanilla.IJeiShapedRecipeBuilder;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.block.WeatheringCopper;
-import net.minecraft.world.level.block.Blocks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +40,6 @@ import java.util.List;
 public class JeiPlugin implements IModPlugin {
 	private static final Identifier PLUGIN_ID = Identifier.fromNamespaceAndPath(EverythingCopper.MODID, "jei");
 	public static final IRecipeType<WeatheringRecipe> WEATHERING_RECIPE_TYPE = IRecipeType.create(EverythingCopper.MODID, "weathering", WeatheringRecipe.class);
-	public static final IRecipeType<CopperTreatmentRecipe> COPPER_TREATMENT_RECIPE_TYPE = IRecipeType.create(EverythingCopper.MODID, "copper_treatment", CopperTreatmentRecipe.class);
 
 	@Override
 	public Identifier getPluginUid() {
@@ -49,18 +56,15 @@ public class JeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerCategories(IRecipeCategoryRegistration registration) {
-		registration.addRecipeCategories(new WeatheringRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
-			new CopperTreatmentRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
-	}
-
-	@Override
-	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-		registration.addCraftingStation(WEATHERING_RECIPE_TYPE, ModBlocks.WEATHERING_STATION.get());
-		registration.addCraftingStation(COPPER_TREATMENT_RECIPE_TYPE, Blocks.CRAFTING_TABLE);
+		registration.addRecipeCategories(new WeatheringRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 	}
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
+		registration.addIngredientInfo(ModItems.COPPER_WATER_BUCKET.get(), Component.translatable("everythingcopper.bucket.water"));
+		registration.addIngredientInfo(ModItems.COPPER_LAVA_BUCKET.get(), Component.translatable("everythingcopper.bucket.lava"));
+		registration.addIngredientInfo(ModItems.COPPER_POWDER_SNOW_BUCKET.get(), Component.translatable("everythingcopper.bucket.powder_snow"));
+		registration.addIngredientInfo(ModItems.COPPER_MILK_BUCKET.get(), Component.translatable("everythingcopper.bucket.milk"));
 		List<WeatheringRecipe> weathering = new ArrayList<>();
 		BuiltInRegistries.BLOCK.forEach(block -> {
 			if (block instanceof WeatheringCopper copper && block.asItem() != Items.AIR) {
@@ -87,7 +91,7 @@ public class JeiPlugin implements IModPlugin {
 	}
 
 	private static void registerTreatmentRecipes(IRecipeRegistration registration) {
-		List<CopperTreatmentRecipe> recipes = new ArrayList<>();
+		List<RecipeHolder<CraftingRecipe>> recipes = new ArrayList<>();
 		Ingredient wax = Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.WAXING_ITEMS));
 		for (Item item : CopperItemVariants.equipment()) {
 			Ingredient ingredient = Ingredient.of(item);
@@ -100,19 +104,32 @@ public class JeiPlugin implements IModPlugin {
 				if (!wax.isEmpty()) {
 					ItemStack waxItem = wax.items().findFirst().orElseThrow().value().getDefaultInstance();
 					ItemStack output = waxOn.assemble(CraftingInput.of(2, 1, List.of(input, waxItem)));
-					recipes.add(new CopperTreatmentRecipe(displayId("wax_on", key, "/" + state), input, output, CopperTreatmentRecipe.Operation.WAX_ON));
+					recipes.add(treatmentRecipe(registration, displayId("wax_on", key, "/" + state), input, output, true));
 				}
 				if (age != WeatheringCopper.WeatherState.UNAFFECTED) {
 					ItemStack output = scrape.assemble(CraftingInput.of(1, 1, List.of(input)));
-					recipes.add(new CopperTreatmentRecipe(displayId("scrape", key, "/" + state), input, output, CopperTreatmentRecipe.Operation.SCRAPE));
+					recipes.add(treatmentRecipe(registration, displayId("scrape", key, "/" + state), input, output, false));
 				}
 				ItemStack waxed = CopperItemVariants.create(item, age, true);
 				ItemStack output = scrape.assemble(CraftingInput.of(1, 1, List.of(waxed)));
-				recipes.add(new CopperTreatmentRecipe(displayId("wax_off", key, "/" + state), waxed, output, CopperTreatmentRecipe.Operation.WAX_OFF));
+				recipes.add(treatmentRecipe(registration, displayId("wax_off", key, "/" + state), waxed, output, false));
 			}
 		}
-		// Keep component-sensitive conversions out of JEI's generic crafting recipe simulation.
-		registration.addRecipes(COPPER_TREATMENT_RECIPE_TYPE, recipes);
+		registration.addRecipes(RecipeTypes.CRAFTING, recipes);
+	}
+
+	private static RecipeHolder<CraftingRecipe> treatmentRecipe(IRecipeRegistration registration, Identifier id, ItemStack input, ItemStack output, boolean waxing) {
+		// Explicit stack displays preserve oxidation and wax components in JEI's crafting category.
+		IJeiShapedRecipeBuilder builder = registration.getVanillaRecipeFactory()
+			.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(output)))
+			.define('E', Ingredient.of(input.getItem()), new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(input)));
+		if (waxing) {
+			Ingredient wax = Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.WAXING_ITEMS));
+			builder.define('W', wax, new SlotDisplay.TagSlotDisplay(ModTags.WAXING_ITEMS)).pattern("EW");
+		} else {
+			builder.pattern("E");
+		}
+		return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), builder.build());
 	}
 
 	private static Identifier displayId(String operation, Identifier item, String suffix) {

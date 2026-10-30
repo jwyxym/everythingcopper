@@ -26,7 +26,6 @@ public class EverythingCopper
     public EverythingCopper(IEventBus modEventBus, ModContainer modContainer) {
         // TODO
         // cauldrons
-        // bucket
         // dispenser behavior for minecart placement
         // fix minecart items
         // iron/copper bar intersecting borders

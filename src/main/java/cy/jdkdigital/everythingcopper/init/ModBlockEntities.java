@@ -2,7 +2,6 @@ package cy.jdkdigital.everythingcopper.init;
 
 import cy.jdkdigital.everythingcopper.EverythingCopper;
 import cy.jdkdigital.everythingcopper.common.block.entity.CopperHopperBlockEntity;
-import cy.jdkdigital.everythingcopper.common.block.entity.WeatheringStationBlockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -18,9 +17,4 @@ public class ModBlockEntities {
 			)
     );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WeatheringStationBlockEntity>> WEATHERING_STATION = BLOCK_ENTITIES.register("weathering_station", () ->
-			new BlockEntityType<>(WeatheringStationBlockEntity::new,
-					java.util.Set.of(ModBlocks.WEATHERING_STATION.get())
-			)
-    );
 }

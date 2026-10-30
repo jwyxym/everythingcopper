@@ -1,8 +1,5 @@
 {
 	"values": {
-		"everythingcopper:weathering_station": {
-			"next_oxidation_stage": "everythingcopper:weathering_station"
-		},
 		"everythingcopper:copper_pressure_plate": {
 			"next_oxidation_stage": "everythingcopper:exposed_copper_pressure_plate"
 		},

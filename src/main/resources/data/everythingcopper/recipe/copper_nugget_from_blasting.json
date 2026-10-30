@@ -1,39 +1,18 @@
 {
 	"type": "minecraft:blasting",
 	"ingredient": [
-		{
-			"item": "minecraft:copper_pickaxe"
-		},
-		{
-			"item": "minecraft:copper_shovel"
-		},
-		{
-			"item": "minecraft:copper_axe"
-		},
-		{
-			"item": "minecraft:copper_hoe"
-		},
-		{
-			"item": "minecraft:copper_sword"
-		},
-		{
-			"item": "everythingcopper:copper_shears"
-		},
-		{
-			"item": "minecraft:copper_helmet"
-		},
-		{
-			"item": "minecraft:copper_chestplate"
-		},
-		{
-			"item": "minecraft:copper_leggings"
-		},
-		{
-			"item": "minecraft:copper_boots"
-		},
-		{
-			"item": "minecraft:copper_horse_armor"
-		}
+		"minecraft:copper_pickaxe",
+		"minecraft:copper_shovel",
+		"minecraft:copper_axe",
+		"minecraft:copper_hoe",
+		"minecraft:copper_sword",
+		"everythingcopper:copper_shears",
+		"minecraft:copper_helmet",
+		"minecraft:copper_chestplate",
+		"minecraft:copper_leggings",
+		"minecraft:copper_boots",
+		"minecraft:copper_horse_armor",
+		"minecraft:copper_spear"
 	],
 	"result": {
 		"id": "minecraft:copper_nugget"

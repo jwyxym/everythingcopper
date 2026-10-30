@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"group": "everythingcopper",
+	"pattern": [
+		"i i",
+		"iii",
+		"i i"
+	],
+	"key": {
+		"i": "#c:ingots/copper"
+	},
+	"result": {
+		"id": "everythingcopper:copper_ladder",
+		"count": 16
+	}
+}

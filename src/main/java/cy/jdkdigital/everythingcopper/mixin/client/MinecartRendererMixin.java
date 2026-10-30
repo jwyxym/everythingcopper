@@ -2,7 +2,7 @@ package cy.jdkdigital.everythingcopper.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import cy.jdkdigital.everythingcopper.EverythingCopper;
-import cy.jdkdigital.everythingcopper.common.entity.IWeatheringEntity;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.AbstractMinecartRenderer;
@@ -25,8 +25,8 @@ public class MinecartRendererMixin {
 
 	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/vehicle/minecart/AbstractMinecart;Lnet/minecraft/client/renderer/entity/state/MinecartRenderState;F)V", at = @At("TAIL"))
 	private void everythingcopper$extract(AbstractMinecart entity, MinecartRenderState state, float partialTick, CallbackInfo callback) {
-		Identifier texture = entity instanceof IWeatheringEntity copper
-			? Identifier.fromNamespaceAndPath(EverythingCopper.MODID, "textures/entity/copper_minecart/" + copper.getAge().getSerializedName() + ".png") : null;
+		Identifier texture = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).getNamespace().equals(EverythingCopper.MODID)
+			? Identifier.fromNamespaceAndPath(EverythingCopper.MODID, "textures/entity/copper_minecart/unaffected.png") : null;
 		state.setRenderData(EVERYTHINGCOPPER_TEXTURE, texture);
 	}
 

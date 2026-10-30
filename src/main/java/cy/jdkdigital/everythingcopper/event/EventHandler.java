@@ -13,6 +13,11 @@ public class EventHandler
         }
         if (event.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)) {
             event.accept(ModItems.COPPER_SHEARS.get());
+			event.accept(ModItems.COPPER_BUCKET.get());
+			event.accept(ModItems.COPPER_WATER_BUCKET.get());
+			event.accept(ModItems.COPPER_LAVA_BUCKET.get());
+			event.accept(ModItems.COPPER_POWDER_SNOW_BUCKET.get());
+			event.accept(ModItems.COPPER_MILK_BUCKET.get());
         }
         if (event.getTabKey().equals(CreativeModeTabs.INGREDIENTS)) {
         }
@@ -55,7 +60,6 @@ public class EventHandler
             event.accept(ModBlocks.WAXED_OXIDIZED_COPPER_RAIL.get());
         }
         if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)) {
-            event.accept(ModBlocks.WEATHERING_STATION.get());
             event.accept(ModBlocks.COPPER_SOUL_LANTERN.get());
             event.accept(ModBlocks.EXPOSED_COPPER_SOUL_LANTERN.get());
             event.accept(ModBlocks.WEATHERED_COPPER_SOUL_LANTERN.get());

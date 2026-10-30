@@ -14,7 +14,7 @@ public final class CopperItemVariants {
 	}
 
 	public static List<Item> equipment() {
-		return List.of(ModItems.COPPER_SWORD.get(), ModItems.COPPER_SHOVEL.get(), ModItems.COPPER_PICKAXE.get(),
+		return List.of(ModItems.COPPER_SWORD.get(), ModItems.COPPER_SPEAR.get(), ModItems.COPPER_SHOVEL.get(), ModItems.COPPER_PICKAXE.get(),
 			ModItems.COPPER_AXE.get(), ModItems.COPPER_HOE.get(), ModItems.COPPER_SHEARS.get(),
 			ModItems.COPPER_HELMET.get(), ModItems.COPPER_CHESTPLATE.get(), ModItems.COPPER_LEGGINGS.get(),
 			ModItems.COPPER_BOOTS.get(), ModItems.COPPER_HORSE_ARMOR.get());

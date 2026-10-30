@@ -6,6 +6,7 @@ import cy.jdkdigital.everythingcopper.init.ModItems;
 import cy.jdkdigital.everythingcopper.init.ModTags;
 import net.minecraft.advancements.triggers.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
@@ -87,6 +88,13 @@ public class CopperRecipeProvider extends RecipeProvider
 				.save(output);
 
         // Items
+		shaped(RecipeCategory.MISC, ModItems.COPPER_BUCKET.get())
+			.pattern("i i")
+			.pattern(" i ")
+			.define('i', Tags.Items.INGOTS_COPPER)
+			.group(EverythingCopper.MODID)
+			.unlockedBy("copper", InventoryChangeTrigger.TriggerInstance.hasItems(Items.COPPER_INGOT))
+			.save(output);
 
 		shaped(RecipeCategory.MISC, ModItems.COPPER_SHEARS.get())
                 .pattern("i ")
@@ -104,8 +112,17 @@ public class CopperRecipeProvider extends RecipeProvider
                 .unlockedBy("copper", InventoryChangeTrigger.TriggerInstance.hasItems(Items.COPPER_INGOT))
 				.save(output);
 
-        // Waxing
-        /// I'm too bored for that
+		// Every registered waxed block has a matching unwaxed input, including damaged anvils.
+		ModBlocks.BLOCKS.getEntries().forEach(holder -> {
+			if (holder.getId().getPath().startsWith("waxed_")) {
+				var input = BuiltInRegistries.BLOCK.getValue(holder.getId().withPath(holder.getId().getPath().substring(6)));
+				shapeless(RecipeCategory.MISC, holder.get())
+					.requires(input)
+					.requires(ModTags.WAXING_ITEMS)
+					.unlockedBy("has_unwaxed", InventoryChangeTrigger.TriggerInstance.hasItems(input))
+					.save(output);
+			}
+		});
     }
 	public static class Runner extends RecipeProvider.Runner {
 		public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) { super(output, registries); }

@@ -1,0 +1,15 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern": [
+		"C C",
+		" C "
+	],
+	"key": {
+		"C": "#c:ingots/copper"
+	},
+	"result": {
+		"id": "everythingcopper:copper_bucket",
+		"count": 1
+	}
+}

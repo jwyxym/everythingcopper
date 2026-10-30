@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"group": "everythingcopper",
+	"pattern": [
+		"i i",
+		"iCi",
+		" i "
+	],
+	"key": {
+		"i": "#c:ingots/copper",
+		"C": "#c:chests"
+	},
+	"result": {
+		"id": "everythingcopper:copper_hopper",
+		"count": 1
+	}
+}

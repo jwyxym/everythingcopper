@@ -1,13 +1,10 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"pattern": [
-		"A",
-		"B"
+	"type": "minecraft:crafting_shapeless",
+	"category": "misc",
+	"ingredients": [
+		"everythingcopper:copper_minecart",
+		"#c:chests"
 	],
-	"key": {
-		"A": "#c:chests",
-		"B": "everythingcopper:copper_minecart"
-	},
 	"result": {
 		"id": "everythingcopper:chest_copper_minecart"
 	}

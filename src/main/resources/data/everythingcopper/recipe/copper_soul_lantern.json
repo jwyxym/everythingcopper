@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"group": "everythingcopper",
+	"pattern": [
+		"nnn",
+		"ntn",
+		"nnn"
+	],
+	"key": {
+		"n": "#everythingcopper:nuggets/copper",
+		"t": "minecraft:soul_torch"
+	},
+	"result": {
+		"id": "everythingcopper:copper_soul_lantern",
+		"count": 1
+	}
+}

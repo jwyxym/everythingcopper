@@ -1,6 +1,6 @@
 {
     "parent": "minecraft:item/generated",
     "textures": {
-        "layer0": "everythingcopper:item/copper_bucket"
+		"layer0": "everythingcopper:item/bucket/copper_bucket"
     }
 }

@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "everythingcopper:copper_trapdoor"
+        "recipe": "minecraft:copper_trapdoor"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "everythingcopper:copper_trapdoor"
+      "minecraft:copper_trapdoor"
     ]
   }
 }

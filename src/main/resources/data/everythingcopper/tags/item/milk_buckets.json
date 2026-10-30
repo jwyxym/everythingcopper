@@ -1,0 +1,7 @@
+{
+	"replace": false,
+	"values": [
+		"minecraft:milk_bucket",
+		"everythingcopper:copper_milk_bucket"
+	]
+}

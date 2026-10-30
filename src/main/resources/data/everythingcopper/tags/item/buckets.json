@@ -1,0 +1,10 @@
+{
+	"replace": false,
+	"values": [
+		"#everythingcopper:buckets/empty",
+		"#everythingcopper:buckets/water",
+		"#everythingcopper:buckets/lava",
+		"#everythingcopper:buckets/powder_snow",
+		"#everythingcopper:buckets/milk"
+	]
+}

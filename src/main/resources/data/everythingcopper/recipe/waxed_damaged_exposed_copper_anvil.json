@@ -1,0 +1,10 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		"everythingcopper:damaged_exposed_copper_anvil",
+		"#everythingcopper:waxing_items"
+	],
+	"result": {
+		"id": "everythingcopper:waxed_damaged_exposed_copper_anvil"
+	}
+}

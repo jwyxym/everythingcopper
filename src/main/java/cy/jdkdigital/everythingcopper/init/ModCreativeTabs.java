@@ -28,9 +28,9 @@ public final class ModCreativeTabs {
 	}
 
 	private static void buildContents(CreativeModeTab.Output output) {
-		Set<Item> equipment = new HashSet<>(CopperItemVariants.equipment());
+		Set<Item> variantItems = new HashSet<>(CopperItemVariants.equipment());
 		ModItems.ITEMS.getEntries().forEach(holder -> {
-			if (!equipment.contains(holder.get())) {
+			if (!variantItems.contains(holder.get())) {
 				output.accept(holder.get());
 			}
 		});

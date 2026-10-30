@@ -1,0 +1,34 @@
+{
+	"parent": "minecraft:recipes/root",
+	"criteria": {
+		"milk": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"everythingcopper:copper_milk_bucket"
+						]
+					}
+				]
+			}
+		},
+		"has_the_recipe": {
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions": {
+				"recipe": "everythingcopper:cake_with_copper_buckets"
+			}
+		}
+	},
+	"requirements": [
+		[
+			"milk",
+			"has_the_recipe"
+		]
+	],
+	"rewards": {
+		"recipes": [
+			"everythingcopper:cake_with_copper_buckets"
+		]
+	}
+}

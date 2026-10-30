@@ -24,8 +24,6 @@ public class ModBlocks
 {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, EverythingCopper.MODID);
 
-	public static final DeferredHolder<Block, ? extends Block> WEATHERING_STATION = createBlock("weathering_station", () -> new WeatheringStation(BlockBehaviour.Properties.ofFullCopy(Blocks.SMITHING_TABLE).setId(blockKey("weathering_station"))));
-
 	public static final DeferredHolder<Block, ? extends Block> COPPER_BARS = createBlock("copper_bars", () -> new CopperBars(WeatheringCopper.WeatherState.UNAFFECTED, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS).setId(blockKey("copper_bars"))));
 	public static final DeferredHolder<Block, ? extends Block> EXPOSED_COPPER_BARS = createBlock("exposed_copper_bars", () -> new CopperBars(WeatheringCopper.WeatherState.EXPOSED, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS).setId(blockKey("exposed_copper_bars"))));
 	public static final DeferredHolder<Block, ? extends Block> WEATHERED_COPPER_BARS = createBlock("weathered_copper_bars", () -> new CopperBars(WeatheringCopper.WeatherState.WEATHERED, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS).setId(blockKey("weathered_copper_bars"))));

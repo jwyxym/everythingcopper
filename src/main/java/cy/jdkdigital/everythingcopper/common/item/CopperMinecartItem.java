@@ -1,9 +1,13 @@
 package cy.jdkdigital.everythingcopper.common.item;
 
 import cy.jdkdigital.everythingcopper.common.entity.CopperMinecart;
+import cy.jdkdigital.everythingcopper.init.ModDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.item.Item;
@@ -22,6 +26,17 @@ public class CopperMinecartItem extends Item
         super(properties);
         this.type = type;
     }
+
+	@Override
+	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, EquipmentSlot slot) {
+		super.inventoryTick(stack, level, entity, slot);
+		// Convert stacks from saves that still contain the removed minecart variants.
+		if (stack.has(ModDataComponents.OXIDATION_STATE.get()) || stack.has(ModDataComponents.WAXED.get())) {
+			stack.remove(ModDataComponents.OXIDATION_STATE.get());
+			stack.remove(ModDataComponents.WAXED.get());
+			stack.set(DataComponents.ITEM_NAME, components().get(DataComponents.ITEM_NAME));
+		}
+	}
 
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
@@ -47,7 +62,9 @@ public class CopperMinecartItem extends Item
                 level.gameEvent(context.getPlayer(), GameEvent.ENTITY_PLACE, blockpos);
             }
 
-            itemstack.shrink(1);
+			if (context.getPlayer() == null || !context.getPlayer().getAbilities().instabuild) {
+				itemstack.shrink(1);
+			}
 			return InteractionResult.SUCCESS;
         }
     }

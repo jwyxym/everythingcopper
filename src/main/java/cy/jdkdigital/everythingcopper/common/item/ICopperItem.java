@@ -57,7 +57,7 @@ public interface ICopperItem
     }
 	static boolean isCopperItem(ItemStack stack) {
 		return stack.getItem() instanceof ICopperItem || stack.is(Items.COPPER_SWORD) || stack.is(Items.COPPER_SHOVEL)
-			|| stack.is(Items.COPPER_PICKAXE) || stack.is(Items.COPPER_AXE) || stack.is(Items.COPPER_HOE)
+			|| stack.is(Items.COPPER_PICKAXE) || stack.is(Items.COPPER_AXE) || stack.is(Items.COPPER_HOE) || stack.is(Items.COPPER_SPEAR)
 			|| stack.is(Items.COPPER_HELMET) || stack.is(Items.COPPER_CHESTPLATE)
 			|| stack.is(Items.COPPER_LEGGINGS) || stack.is(Items.COPPER_BOOTS) || stack.is(Items.COPPER_HORSE_ARMOR);
 	}
