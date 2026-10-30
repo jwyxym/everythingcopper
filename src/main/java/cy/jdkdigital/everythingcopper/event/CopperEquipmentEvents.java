@@ -69,7 +69,7 @@ public class CopperEquipmentEvents {
 			if (!ICopperItem.isCopperItem(stack)) {
 				continue;
 			}
-			if (ICopperItem.canAge(stack) && entity.getRandom().nextFloat() < 0.00018962963F) {
+			if (ICopperItem.canAge(stack) && entity.getRandom().nextFloat() < ICopperItem.getWeatheringChance(stack)) {
 				ICopperItem.setAge(stack, WeatheringUtils.nextState(ICopperItem.getAge(stack)));
 			}
 			updateAppearance(stack);

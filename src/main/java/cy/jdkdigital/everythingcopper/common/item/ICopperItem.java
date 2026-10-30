@@ -1,6 +1,7 @@
 package cy.jdkdigital.everythingcopper.common.item;
 
 import cy.jdkdigital.everythingcopper.init.ModDataComponents;
+import cy.jdkdigital.everythingcopper.init.ModItems;
 import cy.jdkdigital.everythingcopper.util.WeatheringUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -8,12 +9,20 @@ import net.minecraft.world.level.Level;
 
 public interface ICopperItem
 {
+	float WEATHERING_CHANCE_PER_TICK = 0.00018962963F;
+	float FILLED_BUCKET_WEATHERING_MULTIPLIER = 2.0F;
 
     default void weatheringTick(ItemStack stack, Level level) {
-		if (!level.isClientSide() && canAge(stack) && level.getRandom().nextFloat() < 0.00018962963F) {
+		if (!level.isClientSide() && canAge(stack) && level.getRandom().nextFloat() < getWeatheringChance(stack)) {
             setAge(stack, WeatheringUtils.nextState(getAge(stack)));
         }
     }
+
+	static float getWeatheringChance(ItemStack stack) {
+		// Include every filled bucket, even dry mob buckets whose fluid is EMPTY.
+		boolean filledBucket = stack.getItem() instanceof ICopperBucket && !stack.is(ModItems.COPPER_BUCKET.get());
+		return WEATHERING_CHANCE_PER_TICK * (filledBucket ? FILLED_BUCKET_WEATHERING_MULTIPLIER : 1.0F);
+	}
 
     static boolean isWaxed(ItemStack stack) {
 		if (stack.has(ModDataComponents.WAXED.get())) {

@@ -15,7 +15,9 @@ $ProjectRoot = [System.IO.Path]::GetFullPath($ProjectRoot)
 $textureRoot = Join-Path $ProjectRoot 'src/main/resources/assets/everythingcopper/textures'
 $normalPalette = @('421C11', '5F2C1C', '9C4E31', 'C15A36', 'D36F52', 'EA866B', 'FC9982', 'FDD4CB')
 $exposedPalette = @('421C11', '5F2C1C', '7F7257', 'A87762', '988C69', 'CE8D83', 'E6B2A5', 'FDD4CB')
-$patinaPalette = @('1C3D36', '28554A', '377363', '478F78', '5AAA8D', '74C5A5', 'A0E0C1', 'D3F5DE')
+# Match the existing hopper's olive weathering and teal oxidation, including its restrained highlights.
+$weatheredPalette = @('497164', '6A7147', '748D57', '6C975C', '64A077', '66A977', '7AB799', '7AB799')
+$oxidizedPalette = @('3B6655', '396E59', '4C9484', '53A178', '4FAB90', '59B292', '6EC59F', '6EC59F')
 $shadeBoundaries = @(24, 48, 76, 104, 136, 168, 208)
 $metalShades = @{}
 for ($index = 0; $index -lt $normalPalette.Count; $index++) {
@@ -92,17 +94,19 @@ function Save-CheckedTexture {
 	$entity = $RelativePath -eq 'entity/copper_minecart/unaffected.png'
 	if (!$bucket -and !$cart -and !$entity) { return }
 	foreach ($age in @('exposed', 'weathered', 'oxidized')) {
+		$palette = switch ($age) {
+			'exposed' { $exposedPalette }
+			'weathered' { $weatheredPalette }
+			'oxidized' { $oxidizedPalette }
+		}
 		$variant = [System.Drawing.Bitmap]::new($Source)
 		try {
 			for ($y = 0; $y -lt $Source.Height; $y++) {
 				for ($x = 0; $x -lt $Source.Width; $x++) {
 					if (!$MetalMask[$x, $y]) { continue }
 					$pixel = $Source.GetPixel($x, $y)
-					$cellX = [int][Math]::Floor($x / 2)
-					$cellY = [int][Math]::Floor($y / 2)
-					$pattern = ($cellX * 37 + $cellY * 53 + $cellX * $cellY * 11 + 17) % 100
-					$palette = if ($age -eq 'exposed') { $exposedPalette } elseif ($age -eq 'oxidized' -or $pattern -lt 72) { $patinaPalette } else { $normalPalette }
-					$variant.SetPixel($x, $y, (Get-PaletteColor $pixel $palette))
+					$shade = if ($bucket -and $age -ne 'exposed') { $bucketMetalShades[$pixel.ToArgb()] } else { -1 }
+					$variant.SetPixel($x, $y, (Get-PaletteColor $pixel $palette $shade))
 				}
 			}
 			$directory = [IO.Path]::GetDirectoryName($RelativePath)
@@ -116,19 +120,49 @@ function Save-CheckedTexture {
 }
 
 try {
-	# Contents are precisely the vanilla differences from the empty bucket.
-	# Every shared container pixel uses the same copper color in every variant.
+	# Mob buckets shift the container down one pixel and can shade the body differently.
+	# Align the lower body before identifying metal, preserving the vanilla contents.
 	$emptyBucket = Read-OriginalTexture 'item/bucket'
 	try {
+		$bucketMetalColors = @{}
+		for ($y = 0; $y -lt $emptyBucket.Height; $y++) {
+			for ($x = 0; $x -lt $emptyBucket.Width; $x++) {
+				$pixel = $emptyBucket.GetPixel($x, $y)
+				if ($pixel.A -gt 0 -and $pixel.R -eq $pixel.G -and $pixel.G -eq $pixel.B) {
+					$bucketMetalColors[$pixel.ToArgb()] = $true
+				}
+			}
+		}
+		$bucketMetalShades = @{}
+		$orderedMetalColors = @($bucketMetalColors.Keys | Sort-Object { $_ -band 255 })
+		for ($index = 0; $index -lt $orderedMetalColors.Count; $index++) {
+			$bucketMetalShades[$orderedMetalColors[$index]] = $index
+		}
 		foreach ($name in @('bucket', 'water_bucket', 'lava_bucket', 'milk_bucket', 'powder_snow_bucket', 'axolotl_bucket', 'tadpole_bucket', 'cod_bucket', 'salmon_bucket', 'pufferfish_bucket', 'tropical_fish_bucket', 'sulfur_cube_bucket')) {
 			$source = Read-OriginalTexture "item/$name"
 			$output = [System.Drawing.Bitmap]::new($source)
 			$mask = [bool[,]]::new($source.Width, $source.Height)
 			try {
+				$bodyOffset = 0
+				$bestMatches = -1
+				foreach ($offset in @(0, 1)) {
+					$matches = 0
+					for ($y = 10; $y -lt $source.Height; $y++) {
+						for ($x = 0; $x -lt $source.Width; $x++) {
+							$pixel = $source.GetPixel($x, $y)
+							if ($pixel.A -gt 0 -and $pixel.ToArgb() -eq $emptyBucket.GetPixel($x, ($y - $offset)).ToArgb()) { $matches++ }
+						}
+					}
+					if ($matches -gt $bestMatches) { $bodyOffset = $offset; $bestMatches = $matches }
+				}
 				for ($y = 0; $y -lt $source.Height; $y++) {
 					for ($x = 0; $x -lt $source.Width; $x++) {
 						$pixel = $source.GetPixel($x, $y)
-						if ($pixel.A -gt 0 -and $pixel.ToArgb() -eq $emptyBucket.GetPixel($x, $y).ToArgb()) {
+						if ($y -lt $bodyOffset) { continue }
+						$reference = $emptyBucket.GetPixel($x, ($y - $bodyOffset))
+						$sharedMetal = $pixel.ToArgb() -eq $reference.ToArgb()
+						$shiftedMetal = $bodyOffset -gt 0 -and $y -ge 6 -and $reference.A -gt 0 -and $bucketMetalColors.ContainsKey($pixel.ToArgb())
+						if ($pixel.A -gt 0 -and ($sharedMetal -or $shiftedMetal)) {
 							$mask[$x, $y] = $true
 							$output.SetPixel($x, $y, (Get-PaletteColor $pixel $normalPalette))
 						}
@@ -147,7 +181,7 @@ try {
 		$emptyBucket.Dispose()
 	}
 
-	# Preserve vanilla cargo, shadows and wheel pixels; recolor shared body pixels only.
+	# Recolor the entire shared metal chassis, including the lower corners and wheels; preserve cargo.
 	$emptyCart = Read-OriginalTexture 'item/minecart'
 	try {
 		foreach ($name in @('minecart', 'chest_minecart', 'furnace_minecart', 'hopper_minecart', 'tnt_minecart', 'command_block_minecart')) {
@@ -158,8 +192,7 @@ try {
 				for ($y = 0; $y -lt $source.Height; $y++) {
 					for ($x = 0; $x -lt $source.Width; $x++) {
 						$pixel = $source.GetPixel($x, $y)
-						$wheel = $y -ge 13 -or ($x -ge 12 -and $y -ge 11)
-						if (!$wheel -and $pixel.A -gt 0 -and $pixel.ToArgb() -eq $emptyCart.GetPixel($x, $y).ToArgb()) {
+						if ($pixel.A -gt 0 -and $pixel.ToArgb() -eq $emptyCart.GetPixel($x, $y).ToArgb()) {
 							$mask[$x, $y] = $true
 							$output.SetPixel($x, $y, (Get-PaletteColor $pixel $normalPalette))
 						}
@@ -177,7 +210,7 @@ try {
 	}
 
 	# Native spear metal colors are distinct from shaft and grip colors.
-	# Both layouts share one mirrored head pattern, so oxidation cannot alter the silhouette.
+	# Both layouts share the same shade mapping and stage palettes; wood and silhouette stay intact.
 	foreach ($inHand in @($false, $true)) {
 		$suffix = if ($inHand) { '_in_hand' } else { '' }
 		$source = Read-OriginalTexture "item/copper_spear$suffix"
@@ -186,23 +219,20 @@ try {
 				$output = [System.Drawing.Bitmap]::new($source)
 				$mask = [bool[,]]::new($source.Width, $source.Height)
 				try {
-					$coverage = switch ($age) { 'exposed' { 32 } 'weathered' { 72 } 'oxidized' { 100 } default { 0 } }
+					$palette = switch ($age) {
+						'exposed' { $exposedPalette }
+						'weathered' { $weatheredPalette }
+						'oxidized' { $oxidizedPalette }
+						default { $null }
+					}
 					for ($y = 0; $y -lt $source.Height; $y++) {
 						for ($x = 0; $x -lt $source.Width; $x++) {
 							$pixel = $source.GetPixel($x, $y)
 							$key = '{0:X2}{1:X2}{2:X2}' -f $pixel.R, $pixel.G, $pixel.B
 							if ($pixel.A -eq 0 -or !$metalShades.ContainsKey($key)) { continue }
 							$mask[$x, $y] = $true
-							$canonicalX = if ($inHand -and $y -le 8) { 15 - $x } else { $x }
-							if ($age -eq 'exposed') {
-								$output.SetPixel($x, $y, (Get-PaletteColor $pixel $exposedPalette $metalShades[$key]))
-								continue
-							}
-							$cellX = [int][Math]::Floor($canonicalX / 2)
-							$cellY = [int][Math]::Floor($y / 2)
-							$pattern = ($cellX * 37 + $cellY * 53 + $cellX * $cellY * 11 + 17) % 100
-							if ($pattern -lt $coverage) {
-								$output.SetPixel($x, $y, (Get-PaletteColor $pixel $patinaPalette $metalShades[$key]))
+							if ($null -ne $palette) {
+								$output.SetPixel($x, $y, (Get-PaletteColor $pixel $palette $metalShades[$key]))
 							}
 						}
 					}
@@ -245,7 +275,9 @@ $report = [ordered]@{
 	CopperPalette = $normalPalette
 	ExposedPalette = $exposedPalette
 	ExposedReferences = @('item/exposed_copper_sword.png', 'item/exposed_copper_axe.png', 'item/exposed_copper_pickaxe.png')
-	PatinaPalette = $patinaPalette
+	WeatheredPalette = $weatheredPalette
+	OxidizedPalette = $oxidizedPalette
+	StageReferences = @('block/weathered_copper_hopper_outside.png', 'block/oxidized_copper_hopper_outside.png')
 	Validation = 'Original dimensions and per-pixel alpha preserved; all non-metal pixels unchanged.'
 	Assets = @($validation)
 }
