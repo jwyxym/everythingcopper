@@ -49,7 +49,6 @@ public class EverythingCopper
         ModDataComponents.DATA_COMPONENTS.register(modEventBus);
 
         modEventBus.addListener(EventHandler::buildContents);
-		modEventBus.addListener(ModEffects::modifyComponents);
     }
 
 }
