@@ -141,10 +141,6 @@ public class JeiPlugin implements IModPlugin {
 					ItemStack output = waxOn.assemble(CraftingInput.of(2, 1, List.of(input, waxItem)));
 					recipes.add(treatmentRecipe(registration, displayId("wax_on", key, "/" + state), input, output, true));
 				}
-				if (age != WeatheringCopper.WeatherState.UNAFFECTED) {
-					ItemStack output = scrape.assemble(CraftingInput.of(1, 1, List.of(input)));
-					recipes.add(treatmentRecipe(registration, displayId("scrape", key, "/" + state), input, output, false));
-				}
 				ItemStack waxed = CopperItemVariants.create(item, age, true);
 				ItemStack output = scrape.assemble(CraftingInput.of(1, 1, List.of(waxed)));
 				recipes.add(treatmentRecipe(registration, displayId("wax_off", key, "/" + state), waxed, output, false));

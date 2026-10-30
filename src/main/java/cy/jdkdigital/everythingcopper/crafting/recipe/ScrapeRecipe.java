@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import cy.jdkdigital.everythingcopper.common.item.ICopperItem;
 import cy.jdkdigital.everythingcopper.init.ModRecipeTypes;
-import cy.jdkdigital.everythingcopper.util.WeatheringUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +32,7 @@ public class ScrapeRecipe extends CustomRecipe {
 			ItemStack stack = input.getItem(index);
 			if (!stack.isEmpty()) {
 				if (!this.input.test(stack) || !ICopperItem.isCopperItem(stack)
-					|| (!ICopperItem.isWaxed(stack) && ICopperItem.getAge(stack).equals("unaffected"))) {
+					|| !ICopperItem.isWaxed(stack)) {
 					return false;
 				}
 				count++;
@@ -46,13 +45,9 @@ public class ScrapeRecipe extends CustomRecipe {
 	public ItemStack assemble(CraftingInput input) {
 		for (int index = 0; index < input.size(); index++) {
 			ItemStack stack = input.getItem(index);
-			if (this.input.test(stack)) {
+			if (this.input.test(stack) && ICopperItem.isWaxed(stack)) {
 				ItemStack result = stack.copyWithCount(1);
-				if (ICopperItem.isWaxed(result)) {
-					ICopperItem.setWaxed(result, false);
-				} else {
-					ICopperItem.setAge(result, WeatheringUtils.prevState(ICopperItem.getAge(result)));
-				}
+				ICopperItem.setWaxed(result, false);
 				return result;
 			}
 		}
