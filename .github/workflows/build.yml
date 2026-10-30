@@ -1,6 +1,7 @@
-name: Manual Build
+name: Build
 
 on:
+  push:
   workflow_dispatch:
 
 permissions:
