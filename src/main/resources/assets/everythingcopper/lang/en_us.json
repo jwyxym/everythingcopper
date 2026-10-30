@@ -272,6 +272,7 @@
     "item.everythingcopper.exposed_copper_pickaxe": "Exposed Copper Pickaxe",
     "item.everythingcopper.weathered_copper_pickaxe": "Weathered Copper Pickaxe",
     "item.everythingcopper.oxidized_copper_pickaxe": "Oxidized Copper Pickaxe",
+    "item.everythingcopper.copper_shears": "Copper Shears",
     "item.everythingcopper.unaffected_copper_shears": "Copper Shears",
     "item.everythingcopper.exposed_copper_shears": "Exposed Copper Shears",
     "item.everythingcopper.weathered_copper_shears": "Weathered Copper Shears",
@@ -349,6 +350,8 @@
     "everythingcopper.bulb.tip1": "Flips it's state when receiving a redstone signal.",
     "everythingcopper.bulb.tip2": "Use glowstone dust on it to turn it to full brightness and a redstone torch to turn it on and off by hand.",
 
+    "effect.everythingcopper.copper_poisoning": "Copper Poisoning",
+
     "death.attack.everythingcopper.copper_poisoning": "%1$s was killed by copper poisoning",
     "death.attack.everythingcopper.copper_poisoning.player": "%1$s was killed by copper poisoning while playing with %2$s",
     "death.attack.everythingcopper.copper_poisoning1": "%1$s chipped their last tooth eating copper...",
@@ -361,5 +364,24 @@
     "advancements.adventure.consume_copper_nugget.title": "Crack a tooth",
     "advancements.adventure.consume_copper_nugget.description": "Eat a copper nugget, it's very good for your health.",
     "advancements.adventure.summon_copper_golem.title": "Golem Palette",
-    "advancements.adventure.summon_copper_golem.description": "Summon a Copper Golem. Not for any particular reason other than having way too much copper on hand."
+    "advancements.adventure.summon_copper_golem.description": "Summon a Copper Golem. Not for any particular reason other than having way too much copper on hand.",
+
+	"tag.item.everythingcopper.anvil": "Copper Anvils",
+	"tag.item.everythingcopper.axes": "Copper Axes",
+	"tag.item.everythingcopper.chest_armor": "Copper Chestplates",
+	"tag.item.everythingcopper.foot_armor": "Copper Boots",
+	"tag.item.everythingcopper.head_armor": "Copper Helmets",
+	"tag.item.everythingcopper.hoes": "Copper Hoes",
+	"tag.item.everythingcopper.leg_armor": "Copper Leggings",
+	"tag.item.everythingcopper.pickaxes": "Copper Pickaxes",
+	"tag.item.everythingcopper.rails": "Copper Rails",
+	"tag.item.everythingcopper.shovels": "Copper Shovels",
+	"tag.item.everythingcopper.swords": "Copper Swords",
+	"tag.item.everythingcopper.trimmable_armor": "Trimmable Copper Armor",
+	"tag.item.everythingcopper.nuggets": "Copper Nuggets",
+	"tag.item.everythingcopper.nuggets.copper": "Copper Nuggets",
+	"tag.item.everythingcopper.tools.melee_weapon": "Copper Melee Weapons",
+	"tag.item.everythingcopper.tools.mining_tool": "Copper Mining Tools",
+	"tag.item.everythingcopper.tools.shear": "Copper Shears",
+	"tag.item.everythingcopper.waxing_items": "Waxing Materials"
 }

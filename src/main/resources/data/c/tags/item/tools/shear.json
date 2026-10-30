@@ -1,6 +1,6 @@
 {
-    "replace": false,
-    "values": [
-        "everythingcopper:copper_shears"
-    ]
+	"replace": false,
+	"values": [
+		"#everythingcopper:tools/shear"
+	]
 }
