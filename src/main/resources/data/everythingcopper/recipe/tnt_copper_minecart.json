@@ -1,18 +1,14 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "A",
-    "B"
-  ],
-  "key": {
-    "A": {
-      "item": "minecraft:tnt"
-    },
-    "B": {
-      "item": "everythingcopper:copper_minecart"
-    }
-  },
-  "result": {
-    "id": "everythingcopper:tnt_copper_minecart"
-  }
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"A",
+		"B"
+	],
+	"key": {
+		"A": "minecraft:tnt",
+		"B": "everythingcopper:copper_minecart"
+	},
+	"result": {
+		"id": "everythingcopper:tnt_copper_minecart"
+	}
 }

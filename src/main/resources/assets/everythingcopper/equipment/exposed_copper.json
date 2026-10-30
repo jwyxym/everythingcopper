@@ -1,0 +1,27 @@
+{
+	"layers": {
+		"humanoid": [
+			{
+				"texture": "everythingcopper:exposed_copper"
+			}
+		],
+		"humanoid_baby": [
+			{
+				"texture": "everythingcopper:exposed_copper"
+			}
+		],
+		"humanoid_leggings": [
+			{
+				"texture": "everythingcopper:exposed_copper_leggings"
+			}
+		],
+		"horse_body": [
+			{
+				"texture": "minecraft:iron",
+				"dyeable": {
+					"color_when_undyed": 11047784
+				}
+			}
+		]
+	}
+}

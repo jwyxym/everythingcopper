@@ -1,9 +1,5 @@
 {
-  "type": "everythingcopper:wax_on",
-  "item": {
-    "item": "everythingcopper:copper_chestplate"
-  },
-  "wax": {
-    "tag": "everythingcopper:waxing_items"
-  }
+	"type": "everythingcopper:wax_on",
+	"item": "minecraft:copper_chestplate",
+	"wax": "#everythingcopper:waxing_items"
 }

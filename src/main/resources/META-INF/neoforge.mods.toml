@@ -32,3 +32,13 @@ license="${mod_license}"
     versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
+
+[[mixins]]
+	config="everythingcopper.mixins.json"
+
+[[dependencies.${mod_id}]]
+	modId="jei"
+	type="optional"
+	versionRange="[30.48.0.244,31)"
+	ordering="AFTER"
+	side="CLIENT"

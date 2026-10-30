@@ -4,18 +4,18 @@ import cy.jdkdigital.everythingcopper.EverythingCopper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.effect.InstantenousMobEffect;
+import net.minecraft.world.effect.InstantaneousMobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 
-public class CopperPoisoning extends InstantenousMobEffect {
-    public static final ResourceKey<DamageType> COPPER_POISONING = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(EverythingCopper.MODID, "copper_poisoning"));
-    public static final ResourceKey<DamageType> COPPER_POISONING1 = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(EverythingCopper.MODID, "copper_poisoning1"));
-    public static final ResourceKey<DamageType> COPPER_POISONING2 = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(EverythingCopper.MODID, "copper_poisoning2"));
-    public static final ResourceKey<DamageType> COPPER_POISONING3 = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(EverythingCopper.MODID, "copper_poisoning3"));
+public class CopperPoisoning extends InstantaneousMobEffect {
+	public static final ResourceKey<DamageType> COPPER_POISONING = ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(EverythingCopper.MODID, "copper_poisoning"));
+	public static final ResourceKey<DamageType> COPPER_POISONING1 = ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(EverythingCopper.MODID, "copper_poisoning1"));
+	public static final ResourceKey<DamageType> COPPER_POISONING2 = ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(EverythingCopper.MODID, "copper_poisoning2"));
+	public static final ResourceKey<DamageType> COPPER_POISONING3 = ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(EverythingCopper.MODID, "copper_poisoning3"));
 
     public CopperPoisoning(MobEffectCategory category, int color) {
         super(category, color);
@@ -23,7 +23,7 @@ public class CopperPoisoning extends InstantenousMobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
+	public boolean applyEffectTick(net.minecraft.server.level.ServerLevel level, LivingEntity entity, int amplifier) {
         if (!entity.level().isClientSide()) {
             ResourceKey<DamageType> POISONING = switch (entity.level().random.nextInt(4)) {
                 case 0 -> COPPER_POISONING1;
@@ -31,10 +31,10 @@ public class CopperPoisoning extends InstantenousMobEffect {
                 case 2 -> COPPER_POISONING3;
                 default -> COPPER_POISONING;
             };
-            Holder.Reference<DamageType> damageType = entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(POISONING);
-            entity.hurt(new DamageSource(damageType), (float)(2 << amplifier));
+			Holder.Reference<DamageType> damageType = level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(POISONING);
+			entity.hurtServer(level, new DamageSource(damageType), (float)(2 << amplifier));
             return true;
         }
-        return super.applyEffectTick(entity, amplifier);
+		return super.applyEffectTick(level, entity, amplifier);
     }
 }

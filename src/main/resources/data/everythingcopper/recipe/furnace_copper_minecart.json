@@ -1,18 +1,14 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "A",
-    "B"
-  ],
-  "key": {
-    "A": {
-      "item": "minecraft:furnace"
-    },
-    "B": {
-      "item": "everythingcopper:copper_minecart"
-    }
-  },
-  "result": {
-    "id": "everythingcopper:furnace_copper_minecart"
-  }
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"A",
+		"B"
+	],
+	"key": {
+		"A": "minecraft:furnace",
+		"B": "everythingcopper:copper_minecart"
+	},
+	"result": {
+		"id": "everythingcopper:furnace_copper_minecart"
+	}
 }

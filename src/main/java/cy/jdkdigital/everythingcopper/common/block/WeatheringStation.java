@@ -4,9 +4,8 @@ import com.mojang.serialization.MapCodec;
 import cy.jdkdigital.everythingcopper.common.block.entity.WeatheringStationBlockEntity;
 import cy.jdkdigital.everythingcopper.init.ModBlockEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -30,8 +29,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WeatheringStation extends BaseEntityBlock
@@ -68,11 +67,11 @@ public class WeatheringStation extends BaseEntityBlock
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> entityType) {
-        return level.isClientSide ? null : createTickerHelper(entityType, ModBlockEntities.WEATHERING_STATION.get(), WeatheringStationBlockEntity::tick);
+		return level.isClientSide() ? null : createTickerHelper(entityType, ModBlockEntities.WEATHERING_STATION.get(), WeatheringStationBlockEntity::tick);
     }
 
     @SuppressWarnings("deprecation")
-    @Nonnull
+	@NotNull
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
@@ -91,7 +90,7 @@ public class WeatheringStation extends BaseEntityBlock
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
+	protected InteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
         final BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
 
         if (blockEntity instanceof WeatheringStationBlockEntity weatheringStationBlockEntity) {
@@ -108,7 +107,7 @@ public class WeatheringStation extends BaseEntityBlock
                         // take input item out
                         ItemStack inputItem = weatheringStationBlockEntity.inventoryHandler.getStackInSlot(WeatheringStationBlockEntity.SLOT_INPUT);
                         pPlayer.setItemInHand(pHand, inputItem.copy());
-                        inputItem.setCount(0);
+						weatheringStationBlockEntity.inventoryHandler.setStackInSlot(WeatheringStationBlockEntity.SLOT_INPUT, ItemStack.EMPTY);
                         hasInteracted.set(true);
                     }
                 } else if (ItemStack.isSameItemSameComponents(pStack, outputItem)) {
@@ -127,7 +126,7 @@ public class WeatheringStation extends BaseEntityBlock
                         if (weatheringStationBlockEntity.fluidInventory.getTankCapacity(0) - weatheringStationBlockEntity.fluidInventory.getFluidInTank(0).getAmount() >= 1000) {
                             weatheringStationBlockEntity.fluidInventory.fill(new FluidStack(Fluids.WATER, 1000), IFluidHandler.FluidAction.EXECUTE);
                             if (!pPlayer.isCreative()) {
-                                pPlayer.setItemInHand(pHand, pStack.getCraftingRemainingItem());
+								pPlayer.setItemInHand(pHand, new ItemStack(Items.BUCKET));
                             }
                             hasInteracted.set(true);
                         }
@@ -137,24 +136,14 @@ public class WeatheringStation extends BaseEntityBlock
 
             if (hasInteracted.get()) {
                 weatheringStationBlockEntity.setChanged();
-                return ItemInteractionResult.SUCCESS;
+				return InteractionResult.SUCCESS;
             }
         }
         return super.useItemOn(pStack, pState, pLevel, pPos, pPlayer, pHand, pHitResult);
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onRemove(BlockState oldState, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (oldState.getBlock() != newState.getBlock()) {
-            BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-            if (tileEntity instanceof WeatheringStationBlockEntity weatheringStationBlockEntity) {
-                // Drop inventory
-                for (int slot = 0; slot < weatheringStationBlockEntity.inventoryHandler.getSlots(); ++slot) {
-                    Containers.dropItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), weatheringStationBlockEntity.inventoryHandler.getStackInSlot(slot));
-                }
-            }
-        }
-        super.onRemove(oldState, worldIn, pos, newState, isMoving);
-    }
+	@Override
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		return useItemOn(ItemStack.EMPTY, state, level, pos, player, InteractionHand.MAIN_HAND, hit);
+	}
 }

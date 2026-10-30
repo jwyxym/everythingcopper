@@ -1,0 +1,112 @@
+{
+	"values": {
+		"everythingcopper:copper_pressure_plate": {
+			"waxed": "everythingcopper:waxed_copper_pressure_plate"
+		},
+		"everythingcopper:exposed_copper_pressure_plate": {
+			"waxed": "everythingcopper:waxed_exposed_copper_pressure_plate"
+		},
+		"everythingcopper:weathered_copper_pressure_plate": {
+			"waxed": "everythingcopper:waxed_weathered_copper_pressure_plate"
+		},
+		"everythingcopper:oxidized_copper_pressure_plate": {
+			"waxed": "everythingcopper:waxed_oxidized_copper_pressure_plate"
+		},
+		"everythingcopper:copper_hopper": {
+			"waxed": "everythingcopper:waxed_copper_hopper"
+		},
+		"everythingcopper:exposed_copper_hopper": {
+			"waxed": "everythingcopper:waxed_exposed_copper_hopper"
+		},
+		"everythingcopper:weathered_copper_hopper": {
+			"waxed": "everythingcopper:waxed_weathered_copper_hopper"
+		},
+		"everythingcopper:oxidized_copper_hopper": {
+			"waxed": "everythingcopper:waxed_oxidized_copper_hopper"
+		},
+		"everythingcopper:copper_soul_lantern": {
+			"waxed": "everythingcopper:waxed_copper_soul_lantern"
+		},
+		"everythingcopper:exposed_copper_soul_lantern": {
+			"waxed": "everythingcopper:waxed_exposed_copper_soul_lantern"
+		},
+		"everythingcopper:weathered_copper_soul_lantern": {
+			"waxed": "everythingcopper:waxed_weathered_copper_soul_lantern"
+		},
+		"everythingcopper:oxidized_copper_soul_lantern": {
+			"waxed": "everythingcopper:waxed_oxidized_copper_soul_lantern"
+		},
+		"everythingcopper:copper_anvil": {
+			"waxed": "everythingcopper:waxed_copper_anvil"
+		},
+		"everythingcopper:exposed_copper_anvil": {
+			"waxed": "everythingcopper:waxed_exposed_copper_anvil"
+		},
+		"everythingcopper:weathered_copper_anvil": {
+			"waxed": "everythingcopper:waxed_weathered_copper_anvil"
+		},
+		"everythingcopper:oxidized_copper_anvil": {
+			"waxed": "everythingcopper:waxed_oxidized_copper_anvil"
+		},
+		"everythingcopper:chipped_copper_anvil": {
+			"waxed": "everythingcopper:waxed_chipped_copper_anvil"
+		},
+		"everythingcopper:chipped_exposed_copper_anvil": {
+			"waxed": "everythingcopper:waxed_chipped_exposed_copper_anvil"
+		},
+		"everythingcopper:chipped_weathered_copper_anvil": {
+			"waxed": "everythingcopper:waxed_chipped_weathered_copper_anvil"
+		},
+		"everythingcopper:chipped_oxidized_copper_anvil": {
+			"waxed": "everythingcopper:waxed_chipped_oxidized_copper_anvil"
+		},
+		"everythingcopper:damaged_copper_anvil": {
+			"waxed": "everythingcopper:waxed_damaged_copper_anvil"
+		},
+		"everythingcopper:damaged_exposed_copper_anvil": {
+			"waxed": "everythingcopper:waxed_damaged_exposed_copper_anvil"
+		},
+		"everythingcopper:damaged_weathered_copper_anvil": {
+			"waxed": "everythingcopper:waxed_damaged_weathered_copper_anvil"
+		},
+		"everythingcopper:damaged_oxidized_copper_anvil": {
+			"waxed": "everythingcopper:waxed_damaged_oxidized_copper_anvil"
+		},
+		"everythingcopper:copper_rail": {
+			"waxed": "everythingcopper:waxed_copper_rail"
+		},
+		"everythingcopper:exposed_copper_rail": {
+			"waxed": "everythingcopper:waxed_exposed_copper_rail"
+		},
+		"everythingcopper:weathered_copper_rail": {
+			"waxed": "everythingcopper:waxed_weathered_copper_rail"
+		},
+		"everythingcopper:oxidized_copper_rail": {
+			"waxed": "everythingcopper:waxed_oxidized_copper_rail"
+		},
+		"everythingcopper:copper_ladder": {
+			"waxed": "everythingcopper:waxed_copper_ladder"
+		},
+		"everythingcopper:exposed_copper_ladder": {
+			"waxed": "everythingcopper:waxed_exposed_copper_ladder"
+		},
+		"everythingcopper:weathered_copper_ladder": {
+			"waxed": "everythingcopper:waxed_weathered_copper_ladder"
+		},
+		"everythingcopper:oxidized_copper_ladder": {
+			"waxed": "everythingcopper:waxed_oxidized_copper_ladder"
+		},
+		"everythingcopper:copper_button": {
+			"waxed": "everythingcopper:waxed_copper_button"
+		},
+		"everythingcopper:exposed_copper_button": {
+			"waxed": "everythingcopper:waxed_exposed_copper_button"
+		},
+		"everythingcopper:weathered_copper_button": {
+			"waxed": "everythingcopper:waxed_weathered_copper_button"
+		},
+		"everythingcopper:oxidized_copper_button": {
+			"waxed": "everythingcopper:waxed_oxidized_copper_button"
+		}
+	}
+}

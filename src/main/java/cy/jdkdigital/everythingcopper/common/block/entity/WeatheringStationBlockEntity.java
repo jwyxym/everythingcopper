@@ -6,12 +6,14 @@ import cy.jdkdigital.everythingcopper.common.container.ManualItemHandler;
 import cy.jdkdigital.everythingcopper.common.item.ICopperItem;
 import cy.jdkdigital.everythingcopper.init.ModBlockEntities;
 import cy.jdkdigital.everythingcopper.util.WeatheringUtils;
-import net.minecraft.client.multiplayer.ClientLevel;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -59,7 +61,7 @@ public class WeatheringStationBlockEntity extends BlockEntity implements Nameabl
                     return fluid.get().getFluid().isSame(Fluids.WATER);
                 }
             }
-            return slot == SLOT_INPUT && ((stack.getItem() instanceof ICopperItem && ICopperItem.canAge(stack)) || (stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof WeatheringCopper));
+			return slot == SLOT_INPUT && ((ICopperItem.isCopperItem(stack) && ICopperItem.canAge(stack)) || (stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof WeatheringCopper weathering && weathering.getNext(blockItem.getBlock().defaultBlockState()).isPresent()));
         }
 
         @Override
@@ -115,7 +117,7 @@ public class WeatheringStationBlockEntity extends BlockEntity implements Nameabl
             ItemStack fuelStack = blockEntity.inventoryHandler.getStackInSlot(SLOT_FUEL);
             if (!fuelStack.isEmpty()) {
                 if (fuelStack.is(Items.WATER_BUCKET) && availableFluidSpace >= 1000) {
-                    blockEntity.inventoryHandler.setStackInSlot(SLOT_FUEL, fuelStack.getCraftingRemainingItem());
+					blockEntity.inventoryHandler.setStackInSlot(SLOT_FUEL, new ItemStack(Items.BUCKET));
                     blockEntity.fluidInventory.fill(new FluidStack(Fluids.WATER, 1000), IFluidHandler.FluidAction.EXECUTE);
                 } else {
                     var fuelContainer = FluidUtil.getFluidHandler(fuelStack);
@@ -131,6 +133,7 @@ public class WeatheringStationBlockEntity extends BlockEntity implements Nameabl
         }
 
         if (blockEntity.isRunning) {
+			blockEntity.setChanged();
             blockEntity.progress++;
         }
 
@@ -150,8 +153,8 @@ public class WeatheringStationBlockEntity extends BlockEntity implements Nameabl
                         hasFinished.set(true);
                     }
                 });
-            } else if (outputItem.isEmpty() && inputItem.getItem() instanceof ICopperItem && ICopperItem.canAge(inputItem)) {
-                ItemStack newItem = inputItem.copy();
+			} else if (outputItem.isEmpty() && ICopperItem.isCopperItem(inputItem) && ICopperItem.canAge(inputItem)) {
+				ItemStack newItem = inputItem.copyWithCount(1);
                 ICopperItem.setAge(newItem, WeatheringUtils.nextState(ICopperItem.getAge(newItem)));
                 blockEntity.inventoryHandler.setStackInSlot(SLOT_OUTPUT, newItem);
                 hasFinished.set(true);
@@ -166,9 +169,10 @@ public class WeatheringStationBlockEntity extends BlockEntity implements Nameabl
 
         if (!blockEntity.isRunning) {
             ItemStack inputItem = blockEntity.inventoryHandler.getStackInSlot(SLOT_INPUT);
-            if (!inputItem.isEmpty() && blockEntity.fluidInventory.getFluidInTank(0).getAmount() >= 100) {
+			if (blockEntity.inventoryHandler.isItemValid(SLOT_INPUT, inputItem) && blockEntity.inventoryHandler.getStackInSlot(SLOT_OUTPUT).isEmpty() && !inputItem.isEmpty() && blockEntity.fluidInventory.getFluidInTank(0).getAmount() >= 100) {
                 blockEntity.fluidInventory.drain(100, IFluidHandler.FluidAction.EXECUTE);
                 blockEntity.isRunning = true;
+				blockEntity.setChanged();
                 blockEntity.progress = 0;
             }
         }
@@ -184,57 +188,41 @@ public class WeatheringStationBlockEntity extends BlockEntity implements Nameabl
         return Component.translatable("block." + EverythingCopper.MODID + ".weathering_station");
     }
 
-    @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
-        this.loadPacketNBT(pTag, pRegistries);
-    }
+	@Override
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		((ItemStackHandler) inventoryHandler).deserialize(input.childOrEmpty("inv"));
+		((FluidTank) fluidInventory).deserialize(input.childOrEmpty("fluid"));
+		progress = input.getIntOr("progress", 0);
+		isRunning = input.getBooleanOr("running", false);
+	}
 
-    @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.saveAdditional(pTag, pRegistries);
-        this.savePacketNBT(pTag, pRegistries);
-    }
+	@Override
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
+		((ItemStackHandler) inventoryHandler).serialize(output.child("inv"));
+		((FluidTank) fluidInventory).serialize(output.child("fluid"));
+		output.putInt("progress", progress);
+		output.putBoolean("running", isRunning);
+	}
 
-    @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        return saveWithId(pRegistries);
-    }
+	@Override
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+		return saveWithoutMetadata(registries);
+	}
 
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
 
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
-        super.onDataPacket(net, pkt, lookupProvider);
-        this.loadPacketNBT(pkt.getTag(), lookupProvider);
-        if (level instanceof ClientLevel) {
-            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
-        }
-    }
-
-    public void savePacketNBT(CompoundTag tag, HolderLookup.Provider pRegistries) {
-        CompoundTag compound = ((ItemStackHandler) inventoryHandler).serializeNBT(pRegistries);
-        tag.put("inv", compound);
-
-        CompoundTag nbt = new CompoundTag();
-        ((FluidTank) fluidInventory).writeToNBT(pRegistries, nbt);
-        tag.put("fluid", nbt);
-
-        tag.putInt("progress", progress);
-    }
-
-    public void loadPacketNBT(CompoundTag tag, HolderLookup.Provider pRegistries) {
-        if (tag.contains("inv")) {
-            ((ItemStackHandler) inventoryHandler).deserializeNBT(pRegistries, tag.getCompound("inv"));
-        }
-
-        if (tag.contains("fluid")) {
-            ((FluidTank) fluidInventory).readFromNBT(pRegistries, tag.getCompound("fluid"));
-        }
-
-        progress = tag.getInt("progress");
-    }
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		if (level != null && !level.isClientSide()) {
+			for (int slot = 0; slot < inventoryHandler.getSlots(); slot++) {
+				net.minecraft.world.Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), inventoryHandler.getStackInSlot(slot));
+			}
+		}
+		super.preRemoveSideEffects(pos, state);
+	}
 }

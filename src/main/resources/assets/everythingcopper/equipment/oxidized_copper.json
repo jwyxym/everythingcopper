@@ -1,0 +1,27 @@
+{
+	"layers": {
+		"humanoid": [
+			{
+				"texture": "everythingcopper:oxidized_copper"
+			}
+		],
+		"humanoid_baby": [
+			{
+				"texture": "everythingcopper:oxidized_copper"
+			}
+		],
+		"humanoid_leggings": [
+			{
+				"texture": "everythingcopper:oxidized_copper_leggings"
+			}
+		],
+		"horse_body": [
+			{
+				"texture": "minecraft:iron",
+				"dyeable": {
+					"color_when_undyed": 4889212
+				}
+			}
+		]
+	}
+}

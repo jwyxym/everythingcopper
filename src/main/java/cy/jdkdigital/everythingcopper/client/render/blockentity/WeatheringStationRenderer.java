@@ -3,62 +3,58 @@ package cy.jdkdigital.everythingcopper.client.render.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import cy.jdkdigital.everythingcopper.common.block.entity.WeatheringStationBlockEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraft.world.phys.Vec3;
 
-public class WeatheringStationRenderer implements BlockEntityRenderer<WeatheringStationBlockEntity> {
+public class WeatheringStationRenderer implements BlockEntityRenderer<WeatheringStationBlockEntity, WeatheringStationRenderer.State> {
+	private final ItemModelResolver items;
 
-    public WeatheringStationRenderer(BlockEntityRendererProvider.Context context) {
-    }
+	public WeatheringStationRenderer(BlockEntityRendererProvider.Context context) {
+		items = context.itemModelResolver();
+	}
 
-    @Override
-    public void render(WeatheringStationBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay) {
-        ItemStack input = blockEntity.inventoryHandler.getStackInSlot(WeatheringStationBlockEntity.SLOT_INPUT);
-        ItemStack output = blockEntity.inventoryHandler.getStackInSlot(WeatheringStationBlockEntity.SLOT_OUTPUT);
+	@Override
+	public State createRenderState() {
+		return new State();
+	}
 
-        if (!input.isEmpty()) {
-            renderItem(blockEntity.getLevel(), input, true, !output.isEmpty(), poseStack, bufferSource, light, overlay);
-        }
-        if (!output.isEmpty()) {
-            renderItem(blockEntity.getLevel(), output, false, !input.isEmpty(), poseStack, bufferSource, light, overlay);
-        }
-    }
+	@Override
+	public void extractRenderState(WeatheringStationBlockEntity entity, State state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.CrumblingOverlay crumbling) {
+		BlockEntityRenderer.super.extractRenderState(entity, state, partialTick, cameraPosition, crumbling);
+		items.updateForTopItem(state.input, entity.inventoryHandler.getStackInSlot(WeatheringStationBlockEntity.SLOT_INPUT), ItemDisplayContext.FIXED, entity.getLevel(), null, 0);
+		items.updateForTopItem(state.output, entity.inventoryHandler.getStackInSlot(WeatheringStationBlockEntity.SLOT_OUTPUT), ItemDisplayContext.FIXED, entity.getLevel(), null, 0);
+	}
 
-    private void renderItem(Level level, ItemStack output, boolean isInput, boolean multiItems, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay) {
-        poseStack.pushPose();
-        if (output.getItem() instanceof BlockItem blockItem) {
-            if (multiItems) {
-                poseStack.scale(0.5F, 0.5F, 0.5F);
-                if (isInput) {
-                    poseStack.translate(0.3D, 0.6D, 0.3D);
-                } else {
-                    poseStack.translate(0.75D, 0.7D, 0.75D);
-                }
-            } else {
-                poseStack.scale(0.625F, 0.625F, 0.625F);
-                poseStack.translate(0.3D, 0.4D, 0.3D);
-            }
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockItem.getBlock().defaultBlockState(), poseStack, bufferSource, light, overlay, ModelData.EMPTY, null);
-        } else {
-            if (multiItems) {
-                poseStack.translate(0.5D, 0.6375D, 0.5D);
-                if (isInput) {
-                    poseStack.mulPose(Axis.YP.rotationDegrees(90F));
-                }
-                poseStack.scale(0.7F, 0.7F, 0.7F);
-            } else {
-                poseStack.translate(0.5D, 0.6375D, 0.5D);
-                poseStack.scale(0.7F, 0.7F, 0.7F);
-            }
-            Minecraft.getInstance().getItemRenderer().renderStatic(output, ItemDisplayContext.FIXED, light, overlay, poseStack, bufferSource, level, 0);
-        }
-        poseStack.popPose();
-    }
+	@Override
+	public void submit(State state, PoseStack poses, SubmitNodeCollector collector, CameraRenderState camera) {
+		boolean multiple = !state.input.isEmpty() && !state.output.isEmpty();
+		submitItem(state.input, state.lightCoords, poses, collector, multiple ? 90.0F : 0.0F);
+		submitItem(state.output, state.lightCoords, poses, collector, 0.0F);
+	}
+
+	private void submitItem(ItemStackRenderState item, int light, PoseStack poses, SubmitNodeCollector collector, float rotation) {
+		if (item.isEmpty()) {
+			return;
+		}
+		poses.pushPose();
+		poses.translate(0.5F, 0.6375F, 0.5F);
+		poses.mulPose(Axis.YP.rotationDegrees(rotation));
+		poses.scale(0.7F, 0.7F, 0.7F);
+		item.submit(poses, collector, light, OverlayTexture.NO_OVERLAY, 0);
+		poses.popPose();
+	}
+
+	public static class State extends BlockEntityRenderState {
+		public final ItemStackRenderState input = new ItemStackRenderState();
+		public final ItemStackRenderState output = new ItemStackRenderState();
+	}
 }

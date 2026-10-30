@@ -1,114 +1,26 @@
 package cy.jdkdigital.everythingcopper.event;
 
 import cy.jdkdigital.everythingcopper.EverythingCopper;
-import cy.jdkdigital.everythingcopper.common.block.IWeatheringBlock;
-import cy.jdkdigital.everythingcopper.common.entity.CopperGolem;
 import cy.jdkdigital.everythingcopper.init.ModBlocks;
-import cy.jdkdigital.everythingcopper.init.ModEntities;
 import cy.jdkdigital.everythingcopper.init.ModItems;
-import cy.jdkdigital.everythingcopper.util.WeatheringUtils;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import net.minecraft.world.level.block.state.pattern.BlockPattern;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
 
-@EventBusSubscriber(modid = EverythingCopper.MODID)
 public class EventHandler
 {
-    @SubscribeEvent
-    public static void placeCarvedPumpkin(BlockEvent.EntityPlaceEvent event) {
-        if (event.getPlacedBlock().getBlock().equals(Blocks.CARVED_PUMPKIN) || event.getPlacedBlock().getBlock().equals(Blocks.JACK_O_LANTERN)) {
-            LevelAccessor level = event.getLevel();
-
-            BlockPattern copperGolemPattern = CopperGolem.getOrCreateCopperGolemFull();
-
-            BlockPattern.BlockPatternMatch blockPatternMatch = copperGolemPattern.find(event.getLevel(), event.getPos());
-            if (blockPatternMatch != null) {
-                int waxed = 0;
-                for(int j = 0; j < copperGolemPattern.getWidth(); ++j) {
-                    for(int k = 0; k < copperGolemPattern.getHeight(); ++k) {
-                        BlockInWorld block = blockPatternMatch.getBlock(j, k, 0);
-                        if (BuiltInRegistries.BLOCK.getKey(block.getState().getBlock()).getPath().contains("waxed")) {
-                            waxed++;
-                        }
-                        level.setBlock(block.getPos(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
-                        level.levelEvent(2001, block.getPos(), Block.getId(block.getState()));
-                    }
-                }
-
-                BlockPos blockpos = blockPatternMatch.getBlock(1, 2, 0).getPos();
-                CopperGolem copperGolem = ModEntities.COPPER_GOLEM.get().create((Level) level);
-                copperGolem.setPlayerCreated(true);
-                copperGolem.moveTo((double)blockpos.getX() + 0.5D, (double)blockpos.getY() + 0.05D, (double)blockpos.getZ() + 0.5D, 0.0F, 0.0F);
-                level.addFreshEntity(copperGolem);
-                copperGolem.setWaxed(waxed == 4);
-
-                for(ServerPlayer serverplayer1 : level.getEntitiesOfClass(ServerPlayer.class, copperGolem.getBoundingBox().inflate(5.0D))) {
-                    CriteriaTriggers.SUMMONED_ENTITY.trigger(serverplayer1, copperGolem);
-                }
-
-                for(int i = 0; i < copperGolemPattern.getWidth(); ++i) {
-                    for(int j = 0; j < copperGolemPattern.getHeight(); ++j) {
-                        BlockInWorld block = blockPatternMatch.getBlock(i, j, 0);
-                        level.blockUpdated(block.getPos(), Blocks.AIR);
-                    }
-                }
-            }
-        }
-    }
-
-    public static void onEntityAttributeCreate(EntityAttributeCreationEvent event) {
-        event.put(ModEntities.COPPER_GOLEM.get(), IronGolem.createAttributes().build());
-    }
-
     public static void buildContents(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey().equals(CreativeModeTabs.COMBAT)) {
-            event.accept(ModItems.COPPER_SWORD.get());
-            event.accept(ModItems.COPPER_HELMET.get());
-            event.accept(ModItems.COPPER_CHESTPLATE.get());
-            event.accept(ModItems.COPPER_LEGGINGS.get());
-            event.accept(ModItems.COPPER_BOOTS.get());
-            event.accept(ModItems.COPPER_HORSE_ARMOR.get());
         }
         if (event.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)) {
-            event.accept(ModItems.COPPER_HOE.get());
-            event.accept(ModItems.COPPER_AXE.get());
-            event.accept(ModItems.COPPER_PICKAXE.get());
-            event.accept(ModItems.COPPER_SHOVEL.get());
             event.accept(ModItems.COPPER_SHEARS.get());
         }
         if (event.getTabKey().equals(CreativeModeTabs.INGREDIENTS)) {
-            event.accept(ModItems.COPPER_NUGGET.get());
         }
         if (event.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)) {
             event.accept(ModBlocks.COPPER_PRESSURE_PLATE.get());
             event.accept(ModBlocks.EXPOSED_COPPER_PRESSURE_PLATE.get());
             event.accept(ModBlocks.WEATHERED_COPPER_PRESSURE_PLATE.get());
             event.accept(ModBlocks.OXIDIZED_COPPER_PRESSURE_PLATE.get());
-            event.accept(ModBlocks.COPPER_BARS.get());
-            event.accept(ModBlocks.EXPOSED_COPPER_BARS.get());
-            event.accept(ModBlocks.WEATHERED_COPPER_BARS.get());
-            event.accept(ModBlocks.OXIDIZED_COPPER_BARS.get());
-            event.accept(ModBlocks.COPPER_CHAIN.get());
-            event.accept(ModBlocks.EXPOSED_COPPER_CHAIN.get());
-            event.accept(ModBlocks.WEATHERED_COPPER_CHAIN.get());
-            event.accept(ModBlocks.OXIDIZED_COPPER_CHAIN.get());
             event.accept(ModBlocks.COPPER_BUTTON.get());
             event.accept(ModBlocks.EXPOSED_COPPER_BUTTON.get());
             event.accept(ModBlocks.WEATHERED_COPPER_BUTTON.get());
@@ -118,14 +30,6 @@ public class EventHandler
             event.accept(ModBlocks.WAXED_EXPOSED_COPPER_PRESSURE_PLATE.get());
             event.accept(ModBlocks.WAXED_WEATHERED_COPPER_PRESSURE_PLATE.get());
             event.accept(ModBlocks.WAXED_OXIDIZED_COPPER_PRESSURE_PLATE.get());
-            event.accept(ModBlocks.WAXED_COPPER_BARS.get());
-            event.accept(ModBlocks.WAXED_EXPOSED_COPPER_BARS.get());
-            event.accept(ModBlocks.WAXED_WEATHERED_COPPER_BARS.get());
-            event.accept(ModBlocks.WAXED_OXIDIZED_COPPER_BARS.get());
-            event.accept(ModBlocks.WAXED_COPPER_CHAIN.get());
-            event.accept(ModBlocks.WAXED_EXPOSED_COPPER_CHAIN.get());
-            event.accept(ModBlocks.WAXED_WEATHERED_COPPER_CHAIN.get());
-            event.accept(ModBlocks.WAXED_OXIDIZED_COPPER_CHAIN.get());
             event.accept(ModBlocks.WAXED_COPPER_BUTTON.get());
             event.accept(ModBlocks.WAXED_EXPOSED_COPPER_BUTTON.get());
             event.accept(ModBlocks.WAXED_WEATHERED_COPPER_BUTTON.get());
@@ -152,10 +56,6 @@ public class EventHandler
         }
         if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)) {
             event.accept(ModBlocks.WEATHERING_STATION.get());
-            event.accept(ModBlocks.COPPER_LANTERN.get());
-            event.accept(ModBlocks.EXPOSED_COPPER_LANTERN.get());
-            event.accept(ModBlocks.WEATHERED_COPPER_LANTERN.get());
-            event.accept(ModBlocks.OXIDIZED_COPPER_LANTERN.get());
             event.accept(ModBlocks.COPPER_SOUL_LANTERN.get());
             event.accept(ModBlocks.EXPOSED_COPPER_SOUL_LANTERN.get());
             event.accept(ModBlocks.WEATHERED_COPPER_SOUL_LANTERN.get());
@@ -177,10 +77,6 @@ public class EventHandler
             event.accept(ModBlocks.WEATHERED_COPPER_LADDER.get());
             event.accept(ModBlocks.OXIDIZED_COPPER_LADDER.get());
 
-            event.accept(ModBlocks.WAXED_COPPER_LANTERN.get());
-            event.accept(ModBlocks.WAXED_EXPOSED_COPPER_LANTERN.get());
-            event.accept(ModBlocks.WAXED_WEATHERED_COPPER_LANTERN.get());
-            event.accept(ModBlocks.WAXED_OXIDIZED_COPPER_LANTERN.get());
             event.accept(ModBlocks.WAXED_COPPER_SOUL_LANTERN.get());
             event.accept(ModBlocks.WAXED_EXPOSED_COPPER_SOUL_LANTERN.get());
             event.accept(ModBlocks.WAXED_WEATHERED_COPPER_SOUL_LANTERN.get());

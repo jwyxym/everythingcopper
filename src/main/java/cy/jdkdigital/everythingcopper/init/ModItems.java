@@ -2,34 +2,40 @@ package cy.jdkdigital.everythingcopper.init;
 
 import cy.jdkdigital.everythingcopper.EverythingCopper;
 import cy.jdkdigital.everythingcopper.common.item.*;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import cy.jdkdigital.everythingcopper.common.entity.CopperMinecart;
 import net.minecraft.world.item.*;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ModItems
 {
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM, EverythingCopper.MODID);
+	public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(EverythingCopper.MODID);
 
-    public static final DeferredHolder<Item, ? extends Item> COPPER_SWORD = ITEMS.register("copper_sword", () -> new CopperSwordItem(ICopperItem.COPPER_TIER, new Item.Properties().attributes(SwordItem.createAttributes(ICopperItem.COPPER_TIER, 3, -2.4F))));
-    public static final DeferredHolder<Item, ? extends Item> COPPER_SHOVEL = ITEMS.register("copper_shovel", () -> new CopperShovelItem(ICopperItem.COPPER_TIER, new Item.Properties().attributes(ShovelItem.createAttributes(ICopperItem.COPPER_TIER, 1.5F, -3.0F))));
-    public static final DeferredHolder<Item, ? extends Item> COPPER_PICKAXE = ITEMS.register("copper_pickaxe", () -> new CopperPickaxeItem(ICopperItem.COPPER_TIER, new Item.Properties().attributes(PickaxeItem.createAttributes(ICopperItem.COPPER_TIER, 1, -2.8F))));
-    public static final DeferredHolder<Item, ? extends Item> COPPER_AXE = ITEMS.register("copper_axe", () -> new CopperAxeItem(ICopperItem.COPPER_TIER, new Item.Properties().attributes(AxeItem.createAttributes(ICopperItem.COPPER_TIER, 6.0F, -3.1F))));
-    public static final DeferredHolder<Item, ? extends Item> COPPER_HOE = ITEMS.register("copper_hoe", () -> new CopperHoeItem(ICopperItem.COPPER_TIER, new Item.Properties().attributes(HoeItem.createAttributes(ICopperItem.COPPER_TIER, -2, -1.0F))));
+	public static final DeferredHolder<Item, ? extends Item> COPPER_SWORD = vanilla("copper_sword");
+	public static final DeferredHolder<Item, ? extends Item> COPPER_SHOVEL = vanilla("copper_shovel");
+	public static final DeferredHolder<Item, ? extends Item> COPPER_PICKAXE = vanilla("copper_pickaxe");
+	public static final DeferredHolder<Item, ? extends Item> COPPER_AXE = vanilla("copper_axe");
+	public static final DeferredHolder<Item, ? extends Item> COPPER_HOE = vanilla("copper_hoe");
 
-    public static final DeferredHolder<Item, ? extends Item> COPPER_HELMET = ITEMS.register("copper_helmet", () -> new CopperArmorItem(ModArmorMaterials.COPPER_MATERIAL, ArmorItem.Type.HELMET, (new Item.Properties().durability(180))));
-    public static final DeferredHolder<Item, ? extends Item> COPPER_CHESTPLATE = ITEMS.register("copper_chestplate", () -> new CopperArmorItem(ModArmorMaterials.COPPER_MATERIAL, ArmorItem.Type.CHESTPLATE, (new Item.Properties().durability(280))));
-    public static final DeferredHolder<Item, ? extends Item> COPPER_LEGGINGS = ITEMS.register("copper_leggings", () -> new CopperArmorItem(ModArmorMaterials.COPPER_MATERIAL, ArmorItem.Type.LEGGINGS, (new Item.Properties().durability(250))));
-    public static final DeferredHolder<Item, ? extends Item> COPPER_BOOTS = ITEMS.register("copper_boots", () -> new CopperArmorItem(ModArmorMaterials.COPPER_MATERIAL, ArmorItem.Type.BOOTS, (new Item.Properties().durability(210))));
+	public static final DeferredHolder<Item, ? extends Item> COPPER_HELMET = vanilla("copper_helmet");
+	public static final DeferredHolder<Item, ? extends Item> COPPER_CHESTPLATE = vanilla("copper_chestplate");
+	public static final DeferredHolder<Item, ? extends Item> COPPER_LEGGINGS = vanilla("copper_leggings");
+	public static final DeferredHolder<Item, ? extends Item> COPPER_BOOTS = vanilla("copper_boots");
 
-    public static final DeferredHolder<Item, ? extends Item> COPPER_NUGGET = ITEMS.register("copper_nugget", () -> new Item((new Item.Properties().food(ModEffects.NUGGY))));
-    public static final DeferredHolder<Item, ? extends Item> COPPER_SHEARS = ITEMS.register("copper_shears", () -> new CopperShearsItem((new Item.Properties()).durability(200)));
-    public static final DeferredHolder<Item, ? extends Item> COPPER_HORSE_ARMOR = ITEMS.register("copper_horse_armor", () -> new CopperHorseArmorItem(ModArmorMaterials.COPPER_MATERIAL, true, (new Item.Properties()).stacksTo(1)));
+	public static final DeferredHolder<Item, ? extends Item> COPPER_NUGGET = vanilla("copper_nugget");
+	public static final DeferredHolder<Item, ? extends Item> COPPER_SHEARS = ITEMS.registerItem("copper_shears", properties -> new CopperShearsItem(properties.durability(200)));
+	public static final DeferredHolder<Item, ? extends Item> COPPER_HORSE_ARMOR = vanilla("copper_horse_armor");
 
-    public static final DeferredHolder<Item, ? extends Item> COPPER_MINECART = ITEMS.register("copper_minecart", () -> new CopperMinecartItem(AbstractMinecart.Type.RIDEABLE, (new Item.Properties()).stacksTo(1))); // CreativeModeTab.TAB_TRANSPORTATION
-    public static final DeferredHolder<Item, ? extends Item> COPPER_CHEST_MINECART = ITEMS.register("chest_copper_minecart", () -> new CopperMinecartItem(AbstractMinecart.Type.CHEST, (new Item.Properties()).stacksTo(1)));
-    public static final DeferredHolder<Item, ? extends Item> COPPER_FURNACE_MINECART = ITEMS.register("furnace_copper_minecart", () -> new CopperMinecartItem(AbstractMinecart.Type.FURNACE, (new Item.Properties()).stacksTo(1)));
-    public static final DeferredHolder<Item, ? extends Item> COPPER_TNT_MINECART = ITEMS.register("tnt_copper_minecart", () -> new CopperMinecartItem(AbstractMinecart.Type.TNT, (new Item.Properties()).stacksTo(1)));
-    public static final DeferredHolder<Item, ? extends Item> COPPER_HOPPER_MINECART = ITEMS.register("hopper_copper_minecart", () -> new CopperMinecartItem(AbstractMinecart.Type.HOPPER, (new Item.Properties()).stacksTo(1)));
+	public static final DeferredHolder<Item, ? extends Item> COPPER_MINECART = ITEMS.registerItem("copper_minecart", properties -> new CopperMinecartItem(CopperMinecart.Type.RIDEABLE, properties.stacksTo(1)));
+	public static final DeferredHolder<Item, ? extends Item> COPPER_CHEST_MINECART = ITEMS.registerItem("chest_copper_minecart", properties -> new CopperMinecartItem(CopperMinecart.Type.CHEST, properties.stacksTo(1)));
+	public static final DeferredHolder<Item, ? extends Item> COPPER_FURNACE_MINECART = ITEMS.registerItem("furnace_copper_minecart", properties -> new CopperMinecartItem(CopperMinecart.Type.FURNACE, properties.stacksTo(1)));
+	public static final DeferredHolder<Item, ? extends Item> COPPER_TNT_MINECART = ITEMS.registerItem("tnt_copper_minecart", properties -> new CopperMinecartItem(CopperMinecart.Type.TNT, properties.stacksTo(1)));
+	public static final DeferredHolder<Item, ? extends Item> COPPER_HOPPER_MINECART = ITEMS.registerItem("hopper_copper_minecart", properties -> new CopperMinecartItem(CopperMinecart.Type.HOPPER, properties.stacksTo(1)));
+	private static DeferredHolder<Item, Item> vanilla(String path) {
+		Identifier target = Identifier.withDefaultNamespace(path);
+		ITEMS.addAlias(Identifier.fromNamespaceAndPath(EverythingCopper.MODID, path), target);
+		return DeferredHolder.create(Registries.ITEM, target);
+	}
 }

@@ -1,0 +1,35 @@
+{
+	"parent": "minecraft:adventure/root",
+	"display": {
+		"icon": {
+			"item": "minecraft:copper_nugget"
+		},
+		"title": {
+			"translate": "advancements.adventure.consume_copper_nugget.title"
+		},
+		"description": {
+			"translate": "advancements.adventure.consume_copper_nugget.description"
+		},
+		"frame": "task",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"consume": {
+			"trigger": "minecraft:consume_item",
+			"conditions": {
+				"item": {
+					"items": [
+						"minecraft:copper_nugget"
+					]
+				}
+			}
+		}
+	},
+	"requirements": [
+		[
+			"consume"
+		]
+	]
+}

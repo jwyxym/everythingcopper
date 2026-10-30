@@ -1,14 +1,10 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "everythingcopper:copper_hopper"
-    },
-    {
-      "tag": "everythingcopper:waxing_items"
-    }
-  ],
-  "result": {
-    "id": "everythingcopper:waxed_copper_hopper"
-  }
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		"everythingcopper:copper_hopper",
+		"#everythingcopper:waxing_items"
+	],
+	"result": {
+		"id": "everythingcopper:waxed_copper_hopper"
+	}
 }

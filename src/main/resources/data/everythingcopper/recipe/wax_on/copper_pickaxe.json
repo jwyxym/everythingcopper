@@ -1,9 +1,5 @@
 {
-  "type": "everythingcopper:wax_on",
-  "item": {
-    "item": "everythingcopper:copper_pickaxe"
-  },
-  "wax": {
-    "tag": "everythingcopper:waxing_items"
-  }
+	"type": "everythingcopper:wax_on",
+	"item": "minecraft:copper_pickaxe",
+	"wax": "#everythingcopper:waxing_items"
 }

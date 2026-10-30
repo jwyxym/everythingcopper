@@ -1,14 +1,10 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "everythingcopper:weathered_copper_button"
-    },
-    {
-      "tag": "everythingcopper:waxing_items"
-    }
-  ],
-  "result": {
-    "id": "everythingcopper:waxed_weathered_copper_button"
-  }
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		"everythingcopper:weathered_copper_button",
+		"#everythingcopper:waxing_items"
+	],
+	"result": {
+		"id": "everythingcopper:waxed_weathered_copper_button"
+	}
 }

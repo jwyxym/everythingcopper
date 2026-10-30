@@ -2,27 +2,11 @@ package cy.jdkdigital.everythingcopper;
 
 import com.mojang.serialization.MapCodec;
 import cy.jdkdigital.everythingcopper.common.condition.LazyCondition;
-import cy.jdkdigital.everythingcopper.common.entity.CopperGolem;
 import cy.jdkdigital.everythingcopper.event.EventHandler;
 import cy.jdkdigital.everythingcopper.init.*;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.dispenser.BlockSource;
-import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.CarvedPumpkinBlock;
-import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -45,7 +29,6 @@ public class EverythingCopper
         // bucket
         // dispenser behavior for minecart placement
         // fix minecart items
-        // horse armor weathering and proper textures
         // iron/copper bar intersecting borders
         // less noise on rails
         // outline waxed copper blocks when holding wax
@@ -60,39 +43,13 @@ public class EverythingCopper
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModLootModifiers.LOOT_SERIALIZERS.register(modEventBus);
         ModRecipeTypes.RECIPE_SERIALIZERS.register(modEventBus);
+		ModRecipeTypes.RECIPE_TYPES.register(modEventBus);
+		CONDITION_CODECS.register(modEventBus);
+		ModEntities.ENTITIES.addAlias(net.minecraft.resources.Identifier.fromNamespaceAndPath(MODID, "copper_golem"), net.minecraft.resources.Identifier.withDefaultNamespace("copper_golem"));
         ModDataComponents.DATA_COMPONENTS.register(modEventBus);
-        ModArmorMaterials.ARMOR_MATERIALS.register(modEventBus);
 
-        modEventBus.addListener(this::onCommonSetup);
-        modEventBus.addListener(EventHandler::onEntityAttributeCreate);
         modEventBus.addListener(EventHandler::buildContents);
+		modEventBus.addListener(ModEffects::modifyComponents);
     }
 
-    public void onCommonSetup(FMLCommonSetupEvent event) {
-        DispenserBlock.registerBehavior(Items.CARVED_PUMPKIN, new CopperGolemDispenserBehavior());
-        DispenserBlock.registerBehavior(Items.JACK_O_LANTERN, new CopperGolemDispenserBehavior());
-    }
-
-    static class CopperGolemDispenserBehavior extends OptionalDispenseItemBehavior {
-        @Override
-        protected ItemStack execute(BlockSource pBlockSource, ItemStack pItem) {
-            Level level = pBlockSource.level();
-            Direction direction = pBlockSource.state().getValue(DispenserBlock.FACING);
-            BlockPos blockpos = pBlockSource.pos().relative(direction);
-            CarvedPumpkinBlock carvedpumpkinblock = (CarvedPumpkinBlock) Blocks.CARVED_PUMPKIN;
-            if (level.isEmptyBlock(blockpos) && pItem.getItem() instanceof BlockItem blockItem && (carvedpumpkinblock.canSpawnGolem(level, blockpos) || CopperGolem.canSpawnGolem(level, blockpos))) {
-                if (!level.isClientSide) {
-                    level.setBlock(blockpos, blockItem.getBlock().defaultBlockState(), Block.UPDATE_ALL);
-                    level.gameEvent(null, GameEvent.BLOCK_PLACE, blockpos);
-//                    ForgeEventFactory.onBlockPlace(null, BlockSnapshot.create(level.dimension(), level, blockpos), direction);
-                }
-
-                pItem.shrink(1);
-                this.setSuccess(true);
-            } else {
-                this.setSuccess(ArmorItem.dispenseArmor(pBlockSource, pItem));
-            }
-            return pItem;
-        }
-    }
 }

@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class CopperHopper extends HopperBlock implements IWeatheringBlock
 {
@@ -49,7 +49,7 @@ public class CopperHopper extends HopperBlock implements IWeatheringBlock
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> entityType) {
-        return level.isClientSide ? null : createTickerHelper(entityType, ModBlockEntities.COPPER_HOPPER.get(), HopperBlockEntity::pushItemsTick);
+		return level.isClientSide() ? null : createTickerHelper(entityType, ModBlockEntities.COPPER_HOPPER.get(), HopperBlockEntity::pushItemsTick);
     }
 
     @Override
@@ -63,7 +63,11 @@ public class CopperHopper extends HopperBlock implements IWeatheringBlock
                     hopperBlockEntity.clearContent();
 
                     pLevel.setBlockAndUpdate(pPos, newState);
-                    pLevel.getBlockEntity(pPos).loadWithComponents(tag, pLevel.registryAccess());
+					BlockEntity replacement = pLevel.getBlockEntity(pPos);
+					if (replacement != null) {
+						replacement.loadWithComponents(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, pLevel.registryAccess(), tag));
+						replacement.setChanged();
+					}
                 }
             });
         }

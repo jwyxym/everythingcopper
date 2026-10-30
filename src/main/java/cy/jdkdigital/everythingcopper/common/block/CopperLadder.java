@@ -5,7 +5,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.WeatheringCopper;
@@ -51,12 +50,12 @@ public class CopperLadder extends LadderBlock implements IWeatheringBlock
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState1, LevelAccessor level, BlockPos blockPos, BlockPos blockPos1) {
+	public BlockState updateShape(BlockState blockState, LevelReader level, net.minecraft.world.level.ScheduledTickAccess ticks, BlockPos blockPos, Direction direction, BlockPos blockPos1, BlockState blockState1, RandomSource random) {
         if (!blockState.canSurvive(level, blockPos)) {
-            level.scheduleTick(blockPos, this, 1);
+			ticks.scheduleTick(blockPos, this, 1);
         }
 
-        return super.updateShape(blockState, direction, blockState1, level, blockPos, blockPos1);
+		return super.updateShape(blockState, level, ticks, blockPos, direction, blockPos1, blockState1, random);
     }
 
     @Override

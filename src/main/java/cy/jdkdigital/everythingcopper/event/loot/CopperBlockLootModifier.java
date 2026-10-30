@@ -28,8 +28,8 @@ public class CopperBlockLootModifier extends LootModifier
     private final ItemStack addition;
     private final int count;
 
-    protected CopperBlockLootModifier(LootItemCondition[] conditionsIn, ItemStack addition, Integer count) {
-        super(conditionsIn);
+	protected CopperBlockLootModifier(LootItemCondition[] conditionsIn, int priority, ItemStack addition, Integer count) {
+		super(conditionsIn, priority);
         this.addition = addition;
         this.count = count;
     }

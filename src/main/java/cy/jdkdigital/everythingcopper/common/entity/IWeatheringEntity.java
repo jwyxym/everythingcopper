@@ -2,9 +2,9 @@ package cy.jdkdigital.everythingcopper.common.entity;
 
 import cy.jdkdigital.everythingcopper.util.WeatheringUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -18,40 +18,41 @@ import net.minecraft.world.level.block.WeatheringCopper;
 
 public interface IWeatheringEntity
 {
-    EntityDataAccessor<String> DATA_WEATHER_STATE = SynchedEntityData.defineId(CopperGolem.class, EntityDataSerializers.STRING);
-    EntityDataAccessor<Boolean> DATA_WAXED = SynchedEntityData.defineId(CopperGolem.class, EntityDataSerializers.BOOLEAN);
+	EntityDataAccessor<String> weatherStateAccessor();
+	EntityDataAccessor<Boolean> waxedAccessor();
 
     SynchedEntityData getSyncData();
 
     default WeatheringCopper.WeatherState getAge() {
-        return WeatheringCopper.WeatherState.valueOf(getSyncData().get(DATA_WEATHER_STATE));
+		return WeatheringCopper.WeatherState.valueOf(getSyncData().get(weatherStateAccessor()));
     }
 
     default void setAge(WeatheringCopper.WeatherState age) {
-        getSyncData().set(DATA_WEATHER_STATE, age.name());
+		getSyncData().set(weatherStateAccessor(), age.name());
     }
 
     default boolean isWaxed() {
-        return getSyncData().get(DATA_WAXED);
+		return getSyncData().get(waxedAccessor());
     }
 
     default void setWaxed(boolean waxed) {
-        getSyncData().set(DATA_WAXED, waxed);
+		getSyncData().set(waxedAccessor(), waxed);
     }
 
-    default void saveWeatheredState(CompoundTag tag) {
-        tag.putString("weathering", getSyncData().get(DATA_WEATHER_STATE));
-        tag.putBoolean("waxed", getSyncData().get(DATA_WAXED));
+	default void saveWeatheredState(ValueOutput tag) {
+		tag.putString("weathering", getSyncData().get(weatherStateAccessor()));
+		tag.putBoolean("waxed", getSyncData().get(waxedAccessor()));
     }
 
-    default void loadWeatheredState(CompoundTag tag) {
-        if (tag.contains("weathering") && !tag.getString("weathering").isEmpty()) {
-            setAge(WeatheringCopper.WeatherState.valueOf(tag.getString("weathering")));
-        }
-        if (tag.contains("waxed")) {
-            getSyncData().set(DATA_WAXED, tag.getBoolean("waxed"));
-        }
-    }
+	default void loadWeatheredState(ValueInput tag) {
+		String state = tag.getStringOr("weathering", "UNAFFECTED");
+		try {
+			setAge(WeatheringCopper.WeatherState.valueOf(state));
+		} catch (IllegalArgumentException ignored) {
+			setAge(WeatheringCopper.WeatherState.UNAFFECTED);
+		}
+		setWaxed(tag.getBooleanOr("waxed", false));
+	}
 
     default InteractionResult itemUse(Level level, ItemStack itemStack, Player player, BlockPos pos) {
         if (!isWaxed() && itemStack.getItem() instanceof HoneycombItem) {
@@ -62,7 +63,7 @@ public interface IWeatheringEntity
                 itemStack.shrink(1);
             }
             level.levelEvent(player, 3003, pos.above(), 0);
-            return InteractionResult.sidedSuccess(level.isClientSide);
+			return InteractionResult.SUCCESS;
         } else if (itemStack.getItem() instanceof AxeItem) {
             if (isWaxed()) {
                 if (!level.isClientSide()) {
@@ -70,14 +71,14 @@ public interface IWeatheringEntity
                 }
                 level.playSound(player, pos.above(), SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
                 level.levelEvent(player, 3004, pos.above(), 0);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+				return InteractionResult.SUCCESS;
             } else if (!getAge().equals(WeatheringCopper.WeatherState.UNAFFECTED)) {
                 if (!level.isClientSide()) {
                     setAge(WeatheringUtils.prevState(getAge()));
                 }
                 level.playSound(player, pos.above(), SoundEvents.AXE_SCRAPE, SoundSource.BLOCKS, 1.0F, 1.0F);
                 level.levelEvent(player, 3005, pos.above(), 0);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+				return InteractionResult.SUCCESS;
             }
         }
         return InteractionResult.PASS;

@@ -13,8 +13,6 @@ public class ModEntities
 {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, EverythingCopper.MODID);
 
-    public static final DeferredHolder<EntityType<?>, EntityType<CopperGolem>> COPPER_GOLEM = createEntity("copper_golem", EntityType.Builder.of(CopperGolem::new, MobCategory.MISC).sized(1.4F, 2.7F).clientTrackingRange(10));
-
     public static final DeferredHolder<EntityType<?>, EntityType<CopperMinecart>> COPPER_MINECART = createEntity("copper_minecart", EntityType.Builder.<CopperMinecart>of(CopperMinecart::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<CopperMinecartChest>> CHEST_COPPER_MINECART = createEntity("chest_copper_minecart", EntityType.Builder.<CopperMinecartChest>of(CopperMinecartChest::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<CopperMinecartCommandBlock>> COMMAND_BLOCK_COPPER_MINECART = createEntity("command_block_copper_minecart", EntityType.Builder.<CopperMinecartCommandBlock>of(CopperMinecartCommandBlock::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8));
@@ -24,7 +22,7 @@ public class ModEntities
     public static final DeferredHolder<EntityType<?>, EntityType<CopperMinecartTNT>> TNT_COPPER_MINECART = createEntity("tnt_copper_minecart", EntityType.Builder.<CopperMinecartTNT>of(CopperMinecartTNT::new, MobCategory.MISC).sized(0.98F, 0.7F).clientTrackingRange(8));
 
     public static <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> createEntity(String name, EntityType.Builder<E> builder) {
-        DeferredHolder<EntityType<?>, EntityType<E>> entity = ENTITIES.register(name, () -> builder.build(EverythingCopper.MODID + ":" + name));
+		DeferredHolder<EntityType<?>, EntityType<E>> entity = ENTITIES.register(name, () -> builder.build(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, net.minecraft.resources.Identifier.fromNamespaceAndPath(EverythingCopper.MODID, name))));
 
         return entity;
     }

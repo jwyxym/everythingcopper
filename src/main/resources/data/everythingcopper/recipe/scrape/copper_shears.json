@@ -1,6 +1,4 @@
 {
-  "type": "everythingcopper:scrape",
-  "item": {
-    "item": "everythingcopper:copper_shears"
-  }
+	"type": "everythingcopper:scrape",
+	"item": "everythingcopper:copper_shears"
 }

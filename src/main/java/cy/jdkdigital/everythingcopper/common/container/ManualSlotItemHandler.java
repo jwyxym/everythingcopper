@@ -4,7 +4,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class ManualSlotItemHandler extends SlotItemHandler
 {
@@ -16,7 +16,7 @@ public class ManualSlotItemHandler extends SlotItemHandler
     }
 
     @Override
-    public boolean mayPlace(@Nonnull ItemStack stack) {
+	public boolean mayPlace(@NotNull ItemStack stack) {
         return handler.isItemValid(this.getSlotIndex(), stack);
     }
 
@@ -26,7 +26,7 @@ public class ManualSlotItemHandler extends SlotItemHandler
     }
 
     @Override
-    @Nonnull
+	@NotNull
     public ItemStack remove(int amount) {
         return this.handler.extractItem(this.getSlotIndex(), amount, false, false);
     }

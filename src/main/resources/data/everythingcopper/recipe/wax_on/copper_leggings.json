@@ -1,9 +1,5 @@
 {
-  "type": "everythingcopper:wax_on",
-  "item": {
-    "item": "everythingcopper:copper_leggings"
-  },
-  "wax": {
-    "tag": "everythingcopper:waxing_items"
-  }
+	"type": "everythingcopper:wax_on",
+	"item": "minecraft:copper_leggings",
+	"wax": "#everythingcopper:waxing_items"
 }

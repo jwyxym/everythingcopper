@@ -1,25 +1,25 @@
 {
-    "conditions": [
-        {
-            "condition": "minecraft:any_of",
-            "terms": [
-                {
-                    "condition": "neoforge:loot_table_id",
-                    "loot_table_id": "minecraft:chests/village/village_armorer"
-                },
-                {
-                    "condition": "neoforge:loot_table_id",
-                    "loot_table_id": "minecraft:chests/village/village_weaponsmith"
-                },
-                {
-                    "condition": "neoforge:loot_table_id",
-                    "loot_table_id": "minecraft:chests/stronghold_corridor"
-                }
-            ]
-        }
-    ],
-    "type": "everythingcopper:copper_item",
-    "addition": {
-        "id": "everythingcopper:copper_leggings"
-    }
+	"conditions": [
+		{
+			"condition": "minecraft:any_of",
+			"terms": [
+				{
+					"condition": "neoforge:loot_table_id",
+					"loot_table_id": "minecraft:chests/village/village_armorer"
+				},
+				{
+					"condition": "neoforge:loot_table_id",
+					"loot_table_id": "minecraft:chests/village/village_weaponsmith"
+				},
+				{
+					"condition": "neoforge:loot_table_id",
+					"loot_table_id": "minecraft:chests/stronghold_corridor"
+				}
+			]
+		}
+	],
+	"type": "everythingcopper:copper_item",
+	"addition": {
+		"id": "minecraft:copper_leggings"
+	}
 }

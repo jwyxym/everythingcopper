@@ -1,14 +1,10 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "everythingcopper:oxidized_copper_pressure_plate"
-    },
-    {
-      "tag": "everythingcopper:waxing_items"
-    }
-  ],
-  "result": {
-    "id": "everythingcopper:waxed_oxidized_copper_pressure_plate"
-  }
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		"everythingcopper:oxidized_copper_pressure_plate",
+		"#everythingcopper:waxing_items"
+	],
+	"result": {
+		"id": "everythingcopper:waxed_oxidized_copper_pressure_plate"
+	}
 }

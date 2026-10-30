@@ -1,6 +1,4 @@
 {
-  "type": "everythingcopper:scrape",
-  "item": {
-    "item": "everythingcopper:copper_leggings"
-  }
+	"type": "everythingcopper:scrape",
+	"item": "minecraft:copper_leggings"
 }

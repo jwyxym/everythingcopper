@@ -1,15 +1,11 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "group": "waxed_exposed_copper",
-  "ingredients": [
-    {
-      "item": "everythingcopper:exposed_copper_pressure_plate"
-    },
-    {
-      "tag": "everythingcopper:waxing_items"
-    }
-  ],
-  "result": {
-    "id": "everythingcopper:waxed_exposed_copper_pressure_plate"
-  }
+	"type": "minecraft:crafting_shapeless",
+	"group": "waxed_exposed_copper",
+	"ingredients": [
+		"everythingcopper:exposed_copper_pressure_plate",
+		"#everythingcopper:waxing_items"
+	],
+	"result": {
+		"id": "everythingcopper:waxed_exposed_copper_pressure_plate"
+	}
 }

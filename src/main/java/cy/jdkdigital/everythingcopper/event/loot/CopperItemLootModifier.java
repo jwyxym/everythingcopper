@@ -4,7 +4,6 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import cy.jdkdigital.everythingcopper.init.ModDataComponents;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.WeatheringCopper;
@@ -24,8 +23,8 @@ public class CopperItemLootModifier extends LootModifier
 
     private final ItemStack addition;
 
-    protected CopperItemLootModifier(LootItemCondition[] conditionsIn, ItemStack addition) {
-        super(conditionsIn);
+	protected CopperItemLootModifier(LootItemCondition[] conditionsIn, int priority, ItemStack addition) {
+		super(conditionsIn, priority);
         this.addition = addition;
     }
 
@@ -41,7 +40,7 @@ public class CopperItemLootModifier extends LootModifier
                 default -> WeatheringCopper.WeatherState.OXIDIZED.getSerializedName();
             };
 
-            loot.set(ModDataComponents.OXIDATION_STATE, state);
+			cy.jdkdigital.everythingcopper.common.item.ICopperItem.setAge(loot, state);
 
             generatedLoot.add(loot);
         }

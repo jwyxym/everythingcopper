@@ -12,15 +12,15 @@ public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, EverythingCopper.MODID);
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CopperHopperBlockEntity>> COPPER_HOPPER = BLOCK_ENTITIES.register("copper_hopper", () ->
-            BlockEntityType.Builder.of(CopperHopperBlockEntity::new,
-                    ModBlocks.COPPER_HOPPER.get(), ModBlocks.EXPOSED_COPPER_HOPPER.get(), ModBlocks.WEATHERED_COPPER_HOPPER.get(), ModBlocks.OXIDIZED_COPPER_HOPPER.get(),
-                    ModBlocks.WAXED_COPPER_HOPPER.get(), ModBlocks.WAXED_EXPOSED_COPPER_HOPPER.get(), ModBlocks.WAXED_WEATHERED_COPPER_HOPPER.get(), ModBlocks.WAXED_OXIDIZED_COPPER_HOPPER.get()
-            ).build(null)
+			new BlockEntityType<>(CopperHopperBlockEntity::new,
+					java.util.Set.of(ModBlocks.COPPER_HOPPER.get(), ModBlocks.EXPOSED_COPPER_HOPPER.get(), ModBlocks.WEATHERED_COPPER_HOPPER.get(), ModBlocks.OXIDIZED_COPPER_HOPPER.get(),
+					ModBlocks.WAXED_COPPER_HOPPER.get(), ModBlocks.WAXED_EXPOSED_COPPER_HOPPER.get(), ModBlocks.WAXED_WEATHERED_COPPER_HOPPER.get(), ModBlocks.WAXED_OXIDIZED_COPPER_HOPPER.get())
+			)
     );
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WeatheringStationBlockEntity>> WEATHERING_STATION = BLOCK_ENTITIES.register("weathering_station", () ->
-            BlockEntityType.Builder.of(WeatheringStationBlockEntity::new,
-                    ModBlocks.WEATHERING_STATION.get()
-            ).build(null)
+			new BlockEntityType<>(WeatheringStationBlockEntity::new,
+					java.util.Set.of(ModBlocks.WEATHERING_STATION.get())
+			)
     );
 }

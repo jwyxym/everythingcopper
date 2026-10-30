@@ -1,6 +1,4 @@
 {
-  "type": "everythingcopper:scrape",
-  "item": {
-    "item": "everythingcopper:copper_chestplate"
-  }
+	"type": "everythingcopper:scrape",
+	"item": "minecraft:copper_chestplate"
 }

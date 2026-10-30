@@ -1,0 +1,88 @@
+{
+	"values": {
+		"everythingcopper:weathering_station": {
+			"next_oxidation_stage": "everythingcopper:weathering_station"
+		},
+		"everythingcopper:copper_pressure_plate": {
+			"next_oxidation_stage": "everythingcopper:exposed_copper_pressure_plate"
+		},
+		"everythingcopper:exposed_copper_pressure_plate": {
+			"next_oxidation_stage": "everythingcopper:weathered_copper_pressure_plate"
+		},
+		"everythingcopper:weathered_copper_pressure_plate": {
+			"next_oxidation_stage": "everythingcopper:oxidized_copper_pressure_plate"
+		},
+		"everythingcopper:copper_hopper": {
+			"next_oxidation_stage": "everythingcopper:exposed_copper_hopper"
+		},
+		"everythingcopper:exposed_copper_hopper": {
+			"next_oxidation_stage": "everythingcopper:weathered_copper_hopper"
+		},
+		"everythingcopper:weathered_copper_hopper": {
+			"next_oxidation_stage": "everythingcopper:oxidized_copper_hopper"
+		},
+		"everythingcopper:copper_soul_lantern": {
+			"next_oxidation_stage": "everythingcopper:exposed_copper_soul_lantern"
+		},
+		"everythingcopper:exposed_copper_soul_lantern": {
+			"next_oxidation_stage": "everythingcopper:weathered_copper_soul_lantern"
+		},
+		"everythingcopper:weathered_copper_soul_lantern": {
+			"next_oxidation_stage": "everythingcopper:oxidized_copper_soul_lantern"
+		},
+		"everythingcopper:copper_anvil": {
+			"next_oxidation_stage": "everythingcopper:exposed_copper_anvil"
+		},
+		"everythingcopper:exposed_copper_anvil": {
+			"next_oxidation_stage": "everythingcopper:weathered_copper_anvil"
+		},
+		"everythingcopper:weathered_copper_anvil": {
+			"next_oxidation_stage": "everythingcopper:oxidized_copper_anvil"
+		},
+		"everythingcopper:chipped_copper_anvil": {
+			"next_oxidation_stage": "everythingcopper:chipped_exposed_copper_anvil"
+		},
+		"everythingcopper:chipped_exposed_copper_anvil": {
+			"next_oxidation_stage": "everythingcopper:chipped_weathered_copper_anvil"
+		},
+		"everythingcopper:chipped_weathered_copper_anvil": {
+			"next_oxidation_stage": "everythingcopper:chipped_oxidized_copper_anvil"
+		},
+		"everythingcopper:damaged_copper_anvil": {
+			"next_oxidation_stage": "everythingcopper:damaged_exposed_copper_anvil"
+		},
+		"everythingcopper:damaged_exposed_copper_anvil": {
+			"next_oxidation_stage": "everythingcopper:damaged_weathered_copper_anvil"
+		},
+		"everythingcopper:damaged_weathered_copper_anvil": {
+			"next_oxidation_stage": "everythingcopper:damaged_oxidized_copper_anvil"
+		},
+		"everythingcopper:copper_rail": {
+			"next_oxidation_stage": "everythingcopper:exposed_copper_rail"
+		},
+		"everythingcopper:exposed_copper_rail": {
+			"next_oxidation_stage": "everythingcopper:weathered_copper_rail"
+		},
+		"everythingcopper:weathered_copper_rail": {
+			"next_oxidation_stage": "everythingcopper:oxidized_copper_rail"
+		},
+		"everythingcopper:copper_ladder": {
+			"next_oxidation_stage": "everythingcopper:exposed_copper_ladder"
+		},
+		"everythingcopper:exposed_copper_ladder": {
+			"next_oxidation_stage": "everythingcopper:weathered_copper_ladder"
+		},
+		"everythingcopper:weathered_copper_ladder": {
+			"next_oxidation_stage": "everythingcopper:oxidized_copper_ladder"
+		},
+		"everythingcopper:copper_button": {
+			"next_oxidation_stage": "everythingcopper:exposed_copper_button"
+		},
+		"everythingcopper:exposed_copper_button": {
+			"next_oxidation_stage": "everythingcopper:weathered_copper_button"
+		},
+		"everythingcopper:weathered_copper_button": {
+			"next_oxidation_stage": "everythingcopper:oxidized_copper_button"
+		}
+	}
+}

@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -17,8 +17,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 
 public class CopperMinecartItem extends Item
 {
-    final AbstractMinecart.Type type;
-    public CopperMinecartItem(AbstractMinecart.Type type, Properties properties) {
+	final CopperMinecart.Type type;
+	public CopperMinecartItem(CopperMinecart.Type type, Properties properties) {
         super(properties);
         this.type = type;
     }
@@ -31,7 +31,7 @@ public class CopperMinecartItem extends Item
             return InteractionResult.FAIL;
         } else {
             ItemStack itemstack = context.getItemInHand();
-            if (!level.isClientSide) {
+			if (!level.isClientSide()) {
                 RailShape railshape = blockstate.getBlock() instanceof BaseRailBlock ? ((BaseRailBlock)blockstate.getBlock()).getRailDirection(blockstate, level, blockpos, null) : RailShape.NORTH_SOUTH;
                 double d0 = 0.0D;
                 if (railshape.isAscending()) {
@@ -48,7 +48,7 @@ public class CopperMinecartItem extends Item
             }
 
             itemstack.shrink(1);
-            return InteractionResult.sidedSuccess(level.isClientSide);
+			return InteractionResult.SUCCESS;
         }
     }
 }
