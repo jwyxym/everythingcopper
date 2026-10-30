@@ -383,5 +383,11 @@
 	"tag.item.everythingcopper.tools.melee_weapon": "Copper Melee Weapons",
 	"tag.item.everythingcopper.tools.mining_tool": "Copper Mining Tools",
 	"tag.item.everythingcopper.tools.shear": "Copper Shears",
-	"tag.item.everythingcopper.waxing_items": "Waxing Materials"
+	"tag.item.everythingcopper.waxing_items": "Waxing Materials",
+
+	"itemGroup.everythingcopper": "Everything is Copper",
+	"everythingcopper.recipe.treatment": "Waxing and Scraping",
+	"everythingcopper.recipe.wax_on": "Combine the equipment with a waxing material in a crafting grid to prevent oxidation.",
+	"everythingcopper.recipe.wax_off": "Place waxed equipment alone in a crafting grid to remove its wax without changing its oxidation stage.",
+	"everythingcopper.recipe.scrape": "Place unwaxed equipment alone in a crafting grid to remove one oxidation stage."
 }

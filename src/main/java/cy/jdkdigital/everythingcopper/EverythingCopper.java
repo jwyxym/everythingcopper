@@ -47,6 +47,7 @@ public class EverythingCopper
 		CONDITION_CODECS.register(modEventBus);
 		ModEntities.ENTITIES.addAlias(net.minecraft.resources.Identifier.fromNamespaceAndPath(MODID, "copper_golem"), net.minecraft.resources.Identifier.withDefaultNamespace("copper_golem"));
         ModDataComponents.DATA_COMPONENTS.register(modEventBus);
+		ModCreativeTabs.TABS.register(modEventBus);
 
         modEventBus.addListener(EventHandler::buildContents);
     }
