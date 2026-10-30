@@ -34,7 +34,7 @@ public class CopperMinecartItem extends Item
 			if (!level.isClientSide()) {
                 RailShape railshape = blockstate.getBlock() instanceof BaseRailBlock ? ((BaseRailBlock)blockstate.getBlock()).getRailDirection(blockstate, level, blockpos, null) : RailShape.NORTH_SOUTH;
                 double d0 = 0.0D;
-                if (railshape.isAscending()) {
+				if (railshape.isSlope()) {
                     d0 = 0.5D;
                 }
 
