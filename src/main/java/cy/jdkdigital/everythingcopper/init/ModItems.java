@@ -31,7 +31,7 @@ public class ModItems
 	public static final DeferredHolder<Item, ? extends Item> COPPER_BOOTS = vanilla("copper_boots");
 
 	public static final DeferredHolder<Item, ? extends Item> COPPER_NUGGET = vanilla("copper_nugget");
-	public static final DeferredHolder<Item, ? extends Item> COPPER_SHEARS = ITEMS.registerItem("copper_shears", properties -> new CopperShearsItem(properties.durability(200)));
+	public static final DeferredHolder<Item, ? extends Item> COPPER_SHEARS = ITEMS.registerItem("copper_shears", properties -> new CopperShearsItem(properties.durability(200).component(DataComponents.TOOL, ShearsItem.createToolProperties())));
 	public static final DeferredHolder<Item, ? extends Item> COPPER_HORSE_ARMOR = vanilla("copper_horse_armor");
 
 	public static final DeferredHolder<Item, ? extends Item> COPPER_BUCKET = ITEMS.registerItem("copper_bucket", properties -> new CopperBucketItem(Fluids.EMPTY, properties.stacksTo(16)));

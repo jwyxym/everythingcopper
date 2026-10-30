@@ -53,6 +53,7 @@ public final class CopperItemVariants {
 	}
 
 	public static ItemStack copyState(ItemInstance from, ItemStack target) {
+		target.set(ModDataComponents.WEATHERING_PROGRESS.get(), from.getOrDefault(ModDataComponents.WEATHERING_PROGRESS.get(), 0));
 		String age = from.get(ModDataComponents.OXIDATION_STATE.get());
 		ICopperItem.setAge(target, age == null ? "unaffected" : age);
 		ICopperItem.setWaxed(target, Boolean.TRUE.equals(from.get(ModDataComponents.WAXED.get())));

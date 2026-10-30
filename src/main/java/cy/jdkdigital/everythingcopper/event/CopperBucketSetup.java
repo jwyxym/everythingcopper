@@ -1,5 +1,6 @@
 package cy.jdkdigital.everythingcopper.event;
 
+import cy.jdkdigital.everythingcopper.util.CopperWeathering;
 import cy.jdkdigital.everythingcopper.EverythingCopper;
 import cy.jdkdigital.everythingcopper.common.item.CopperBucketItem;
 import cy.jdkdigital.everythingcopper.init.ModItems;
@@ -47,21 +48,22 @@ public class CopperBucketSetup {
 				emptyCauldronBucket(level, pos, player, hand, stack, Blocks.POWDER_SNOW_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3), SoundEvents.BUCKET_EMPTY_POWDER_SNOW));
 		}
 		event.register(Identifier.withDefaultNamespace("water"), ModItems.COPPER_BUCKET.get(), (state, level, pos, player, hand, stack) ->
-			CauldronInteractions.fillBucket(state, level, pos, player, hand, stack, CopperItemVariants.copyState(stack, new ItemStack(ModItems.COPPER_WATER_BUCKET.get())),
+			CauldronInteractions.fillBucket(state, level, pos, player, hand, stack, CopperWeathering.bucketInteraction(stack, new ItemStack(ModItems.COPPER_WATER_BUCKET.get()), level),
 				block -> block.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BUCKET_FILL));
 		event.register(Identifier.withDefaultNamespace("lava"), ModItems.COPPER_BUCKET.get(), (state, level, pos, player, hand, stack) ->
-			CauldronInteractions.fillBucket(state, level, pos, player, hand, stack, CopperItemVariants.copyState(stack, new ItemStack(ModItems.COPPER_LAVA_BUCKET.get())),
+			CauldronInteractions.fillBucket(state, level, pos, player, hand, stack, CopperWeathering.bucketInteraction(stack, new ItemStack(ModItems.COPPER_LAVA_BUCKET.get()), level),
 				block -> true, SoundEvents.BUCKET_FILL_LAVA));
 		event.register(Identifier.withDefaultNamespace("powder_snow"), ModItems.COPPER_BUCKET.get(), (state, level, pos, player, hand, stack) ->
-			CauldronInteractions.fillBucket(state, level, pos, player, hand, stack, CopperItemVariants.copyState(stack, new ItemStack(ModItems.COPPER_POWDER_SNOW_BUCKET.get())),
+			CauldronInteractions.fillBucket(state, level, pos, player, hand, stack, CopperWeathering.bucketInteraction(stack, new ItemStack(ModItems.COPPER_POWDER_SNOW_BUCKET.get()), level),
 				block -> block.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BUCKET_FILL_POWDER_SNOW));
 	}
 
 	private static InteractionResult emptyCauldronBucket(Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack stack, BlockState filled, SoundEvent sound) {
+		if (level.getBlockState(pos).equals(filled)) return InteractionResult.PASS;
 		if (!level.isClientSide()) {
 			player.awardStat(Stats.FILL_CAULDRON);
 			player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
-			player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, CopperItemVariants.copyState(stack, new ItemStack(ModItems.COPPER_BUCKET.get()))));
+			player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, CopperWeathering.bucketInteraction(stack, new ItemStack(ModItems.COPPER_BUCKET.get()), level)));
 			level.setBlockAndUpdate(pos, filled);
 			level.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
 			level.gameEvent(player, GameEvent.FLUID_PLACE, pos);
@@ -81,7 +83,7 @@ public class CopperBucketSetup {
 						return super.execute(source, stack);
 					}
 					container.checkExtraContent(null, source.level(), stack, pos);
-					return consumeWithRemainder(source, stack, CopperItemVariants.copyState(stack, new ItemStack(ModItems.COPPER_BUCKET.get())));
+					return consumeWithRemainder(source, stack, CopperWeathering.bucketInteraction(stack, new ItemStack(ModItems.COPPER_BUCKET.get()), source.level()));
 				}
 			};
 			DispenserBlock.registerBehavior(ModItems.COPPER_WATER_BUCKET.get(), filled);
@@ -101,7 +103,7 @@ public class CopperBucketSetup {
 						ItemStack contents = CopperBucketItem.copperContents(pickup.pickupBlock(null, source.level(), pos, state));
 						if (!contents.isEmpty()) {
 							source.level().gameEvent(null, GameEvent.FLUID_PICKUP, pos);
-							return consumeWithRemainder(source, stack, CopperItemVariants.copyState(stack, contents));
+							return consumeWithRemainder(source, stack, CopperWeathering.bucketInteraction(stack, contents, source.level()));
 						}
 					}
 					return super.execute(source, stack);

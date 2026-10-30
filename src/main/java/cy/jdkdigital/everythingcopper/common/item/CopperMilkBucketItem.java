@@ -1,5 +1,6 @@
 package cy.jdkdigital.everythingcopper.common.item;
 
+import cy.jdkdigital.everythingcopper.util.CopperWeathering;
 import cy.jdkdigital.everythingcopper.event.CopperEquipmentEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -13,6 +14,7 @@ public class CopperMilkBucketItem extends Item implements ICopperBucket {
 
 	@Override
 	public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
+		CopperWeathering.recordBucketUse(stack, level);
 		CopperEquipmentEvents.updateAppearance(stack);
 		return super.finishUsingItem(stack, level, entity);
 	}

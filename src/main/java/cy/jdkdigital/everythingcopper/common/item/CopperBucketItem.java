@@ -1,7 +1,7 @@
 package cy.jdkdigital.everythingcopper.common.item;
 
+import cy.jdkdigital.everythingcopper.util.CopperWeathering;
 import cy.jdkdigital.everythingcopper.init.ModItems;
-import cy.jdkdigital.everythingcopper.util.CopperItemVariants;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -68,7 +68,7 @@ public class CopperBucketItem extends BucketItem implements ICopperBucket {
 			if (filled.isEmpty()) {
 				return InteractionResult.FAIL;
 			}
-			filled = CopperItemVariants.copyState(stack, filled);
+			filled = CopperWeathering.bucketInteraction(stack, filled, level);
 			player.awardStat(Stats.ITEM_USED.get(bucket));
 			pickup.getPickupSound(state).ifPresent(sound -> player.playSound(sound, 1.0F, 1.0F));
 			level.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
@@ -86,7 +86,8 @@ public class CopperBucketItem extends BucketItem implements ICopperBucket {
 			CriteriaTriggers.PLACED_BLOCK.trigger(serverPlayer, target, stack);
 		}
 		player.awardStat(Stats.ITEM_USED.get(bucket));
-		ItemStack empty = player.hasInfiniteMaterials() ? stack : CopperItemVariants.copyState(stack, new ItemStack(ModItems.COPPER_BUCKET.get()));
+		if (player.hasInfiniteMaterials()) CopperWeathering.recordBucketUse(stack, level);
+		ItemStack empty = player.hasInfiniteMaterials() ? stack : CopperWeathering.bucketInteraction(stack, new ItemStack(ModItems.COPPER_BUCKET.get()), level);
 		return InteractionResult.SUCCESS.heldItemTransformedTo(ItemUtils.createFilledResult(stack, player, empty));
 	}
 }

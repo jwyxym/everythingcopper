@@ -1,5 +1,5 @@
 {
 	"type": "everythingcopper:wax_on",
-	"item": "everythingcopper:copper_lava_bucket",
+	"item": "#everythingcopper:waxable_copper_items",
 	"wax": "#everythingcopper:waxing_items"
 }

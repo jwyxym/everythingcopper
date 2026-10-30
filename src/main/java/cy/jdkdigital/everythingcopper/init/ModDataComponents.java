@@ -15,6 +15,7 @@ public class ModDataComponents
 
     public static final Supplier<DataComponentType<String>> OXIDATION_STATE = DATA_COMPONENTS.register("oxidation_state", () -> DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build());
     public static final Supplier<DataComponentType<Boolean>> WAXED = DATA_COMPONENTS.register("waxed", () -> DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
+	public static final Supplier<DataComponentType<Integer>> WEATHERING_PROGRESS = DATA_COMPONENTS.register("weathering_progress", () -> DataComponentType.<Integer>builder().persistent(Codec.intRange(0, Integer.MAX_VALUE)).networkSynchronized(ByteBufCodecs.VAR_INT).build());
 
     public static void register() {
     }

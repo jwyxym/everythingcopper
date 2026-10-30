@@ -1,9 +1,9 @@
 package cy.jdkdigital.everythingcopper.event;
 
+import cy.jdkdigital.everythingcopper.util.CopperWeathering;
 import cy.jdkdigital.everythingcopper.EverythingCopper;
 import cy.jdkdigital.everythingcopper.init.ModItems;
 import cy.jdkdigital.everythingcopper.common.item.CopperMobBucketItem;
-import cy.jdkdigital.everythingcopper.util.CopperItemVariants;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Bucketable;
@@ -46,7 +46,7 @@ public class CopperBucketEvents {
 		}
 		Player player = event.getEntity();
 		if (!player.level().isClientSide()) {
-			ItemStack filled = CopperItemVariants.copyState(container, nativeContents.transmuteCopy(copper, 1));
+			ItemStack filled = CopperWeathering.bucketInteraction(container, nativeContents.transmuteCopy(copper, 1), player.level());
 			bucketable.saveToBucketTag(filled);
 			entity.playSound(bucketable.getPickupSound(), 1.0F, 1.0F);
 			player.setItemInHand(event.getHand(), ItemUtils.createFilledResult(container, player, filled, false));
@@ -74,7 +74,7 @@ public class CopperBucketEvents {
 			player.level().playSound(null, animal.blockPosition(), animal instanceof Goat ? SoundEvents.GOAT_MILK : SoundEvents.COW_MILK,
 				SoundSource.NEUTRAL, 1.0F, 1.0F);
 			player.awardStat(Stats.ITEM_USED.get(ModItems.COPPER_BUCKET.get()));
-			ItemStack milk = CopperItemVariants.copyState(event.getItemStack(), new ItemStack(ModItems.COPPER_MILK_BUCKET.get()));
+			ItemStack milk = CopperWeathering.bucketInteraction(event.getItemStack(), new ItemStack(ModItems.COPPER_MILK_BUCKET.get()), player.level());
 			player.setItemInHand(event.getHand(), ItemUtils.createFilledResult(event.getItemStack(), player, milk));
 		}
 		event.setCancellationResult(InteractionResult.SUCCESS);

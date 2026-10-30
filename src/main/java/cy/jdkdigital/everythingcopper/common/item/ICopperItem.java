@@ -1,20 +1,12 @@
 package cy.jdkdigital.everythingcopper.common.item;
 
 import cy.jdkdigital.everythingcopper.init.ModDataComponents;
-import cy.jdkdigital.everythingcopper.init.ModItems;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public interface ICopperItem
 {
 	float WEATHERING_CHANCE_PER_TICK = 0.00018962963F;
-	float FILLED_BUCKET_WEATHERING_MULTIPLIER = 2.0F;
-
-	static float getWeatheringChance(ItemStack stack) {
-		// Include every filled bucket, even dry mob buckets whose fluid is EMPTY.
-		boolean filledBucket = stack.getItem() instanceof ICopperBucket && !stack.is(ModItems.COPPER_BUCKET.get());
-		return WEATHERING_CHANCE_PER_TICK * (filledBucket ? FILLED_BUCKET_WEATHERING_MULTIPLIER : 1.0F);
-	}
 
     static boolean isWaxed(ItemStack stack) {
 		if (stack.has(ModDataComponents.WAXED.get())) {

@@ -1,7 +1,7 @@
 package cy.jdkdigital.everythingcopper.common.item;
 
+import cy.jdkdigital.everythingcopper.util.CopperWeathering;
 import cy.jdkdigital.everythingcopper.init.ModItems;
-import cy.jdkdigital.everythingcopper.util.CopperItemVariants;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -20,8 +20,9 @@ public class CopperSolidBucketItem extends SolidBucketItem implements ICopperBuc
 		ItemStack original = context.getItemInHand().copyWithCount(1);
 		InteractionResult result = super.useOn(context);
 		Player player = context.getPlayer();
-		if (result.consumesAction() && player != null && !player.hasInfiniteMaterials()) {
-			player.setItemInHand(context.getHand(), CopperItemVariants.copyState(original, new ItemStack(ModItems.COPPER_BUCKET.get())));
+		if (result.consumesAction() && player != null && !context.getLevel().isClientSide()) {
+			ItemStack target = player.hasInfiniteMaterials() ? player.getItemInHand(context.getHand()) : new ItemStack(ModItems.COPPER_BUCKET.get());
+			player.setItemInHand(context.getHand(), CopperWeathering.bucketInteraction(original, target, context.getLevel()));
 		}
 		return result;
 	}
