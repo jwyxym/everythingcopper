@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -59,7 +58,6 @@ public final class ModCreativeTabs {
 		addBlockVariants(output, Blocks.COPPER_BARS.asList());
 		addBlockVariants(output, Blocks.COPPER_CHAIN.asList());
 		addBlockVariants(output, Blocks.COPPER_LANTERN.asList());
-		output.accept(Items.COPPER_GOLEM_SPAWN_EGG);
 	}
 
 	private static void addBlockVariants(CreativeModeTab.Output output, List<Block> blocks) {
