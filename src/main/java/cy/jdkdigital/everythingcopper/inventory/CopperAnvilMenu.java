@@ -18,11 +18,15 @@ public class CopperAnvilMenu extends AnvilMenu
 
     @Override
     protected void onTake(Player player, ItemStack stack) {
+		ItemStack left = this.inputSlots.getItem(0).copy();
+		ItemStack right = this.inputSlots.getItem(1).copy();
+		if (CommonHooks.fireAnvilCraftPre(this, player, stack, left, right).isCanceled()) {
+			return;
+		}
+
         if (!player.getAbilities().instabuild) {
             player.giveExperienceLevels(-this.cost.get());
         }
-
-        float breakChance = CommonHooks.onAnvilRepair(player, stack, CopperAnvilMenu.this.inputSlots.getItem(0), CopperAnvilMenu.this.inputSlots.getItem(1));
 
         this.inputSlots.setItem(0, ItemStack.EMPTY);
         if (this.repairItemCountCost > 0) {
@@ -40,7 +44,7 @@ public class CopperAnvilMenu extends AnvilMenu
         this.cost.set(0);
         this.access.execute((level, pos) -> {
             BlockState blockstate = level.getBlockState(pos);
-            if (!player.getAbilities().instabuild && blockstate.is(BlockTags.ANVIL) && player.getRandom().nextFloat() < breakChance) {
+			if (!player.getAbilities().instabuild && blockstate.is(BlockTags.ANVIL) && player.getRandom().nextFloat() < 0.12F) {
                 BlockState newState = CopperAnvil.damage(blockstate);
                 if (newState == null) {
                     level.removeBlock(pos, false);
@@ -53,5 +57,6 @@ public class CopperAnvilMenu extends AnvilMenu
                 level.levelEvent(1030, pos, 0);
             }
         });
+		CommonHooks.fireAnvilCraftPost(this, player, stack, left, right);
     }
 }

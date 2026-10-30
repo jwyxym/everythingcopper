@@ -10,7 +10,7 @@ public interface ICopperItem
 {
 
     default void weatheringTick(ItemStack stack, Level level) {
-		if (!level.isClientSide() && canAge(stack) && level.random.nextFloat() < 0.00018962963F) {
+		if (!level.isClientSide() && canAge(stack) && level.getRandom().nextFloat() < 0.00018962963F) {
             setAge(stack, WeatheringUtils.nextState(getAge(stack)));
         }
     }

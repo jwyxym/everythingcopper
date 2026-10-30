@@ -66,7 +66,7 @@ public class CopperMinecart extends Minecart implements IWeatheringEntity
 
     @Override
     public void tick() {
-		if (!level().isClientSide() && tickCount%369 == 0 && canAge() && this.level().random.nextFloat() < 0.005688889F) {
+		if (!level().isClientSide() && tickCount%369 == 0 && canAge() && this.level().getRandom().nextFloat() < 0.005688889F) {
             setAge(WeatheringUtils.nextState(getAge()));
         }
         super.tick();

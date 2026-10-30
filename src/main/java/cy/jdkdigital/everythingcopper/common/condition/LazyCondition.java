@@ -2,13 +2,13 @@ package cy.jdkdigital.everythingcopper.common.condition;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.neoforged.neoforge.common.conditions.FalseCondition;
+import net.neoforged.neoforge.common.conditions.NeverCondition;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
 public record LazyCondition(ICondition value) implements ICondition {
 
     public static final MapCodec<LazyCondition> CODEC = RecordCodecBuilder.mapCodec((builder) -> {
-        return builder.group(ICondition.CODEC.fieldOf("value").orElse(FalseCondition.INSTANCE).forGetter(LazyCondition::value)).apply(builder, LazyCondition::new);
+		return builder.group(ICondition.CODEC.fieldOf("value").orElse(NeverCondition.INSTANCE).forGetter(LazyCondition::value)).apply(builder, LazyCondition::new);
     });
 
     public boolean test(IContext context) {

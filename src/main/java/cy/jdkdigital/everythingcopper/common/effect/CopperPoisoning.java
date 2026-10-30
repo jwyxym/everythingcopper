@@ -25,7 +25,7 @@ public class CopperPoisoning extends InstantaneousMobEffect {
     @Override
 	public boolean applyEffectTick(net.minecraft.server.level.ServerLevel level, LivingEntity entity, int amplifier) {
         if (!entity.level().isClientSide()) {
-            ResourceKey<DamageType> POISONING = switch (entity.level().random.nextInt(4)) {
+			ResourceKey<DamageType> POISONING = switch (entity.level().getRandom().nextInt(4)) {
                 case 0 -> COPPER_POISONING1;
                 case 1 -> COPPER_POISONING2;
                 case 2 -> COPPER_POISONING3;
