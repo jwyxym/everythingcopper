@@ -221,7 +221,7 @@
 	"tag.item.everythingcopper.buckets.powder_snow": "Copper Powder Snow Buckets",
 	"tag.item.everythingcopper.buckets.milk": "Copper Milk Buckets",
 	"tag.item.everythingcopper.milk_buckets": "Milk Buckets",
-	"everythingcopper.recipe.natural_weathering": "Copper armor and horse armor oxidize only while worn. Tools advance one stage per 32 actual durability-loss operations; buckets per 16 successful filling, emptying or similar interactions. Blocks and minecarts oxidize only while placed. Rain accelerates oxidation by 20%. Wax prevents oxidation.",
+	"everythingcopper.recipe.natural_weathering": "Copper armor and horse armor oxidize only while worn. Tools advance one stage for each 20% of their maximum durability actually lost; buckets per 16 successful filling, emptying or similar interactions. Blocks and minecarts oxidize only while placed. Rain accelerates oxidation by 20%. Wax prevents oxidation.",
 	"item.everythingcopper.copper_spear": "Copper Spear",
 	"item.everythingcopper.unaffected_copper_spear": "Copper Spear",
 	"item.everythingcopper.exposed_copper_spear": "Exposed Copper Spear",

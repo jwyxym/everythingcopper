@@ -18,6 +18,8 @@ import java.util.function.Consumer;
 public abstract class ItemStackMixin {
 	@Unique
 	private ServerLevel everythingcopper$durabilityLevel;
+	@Unique
+	private int everythingcopper$previousDamage;
 
 	// NeoForge's ServerPlayer overloads delegate to these LivingEntity implementations.
 	@Inject(method = "processDurabilityChange(ILnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)I", at = @At("RETURN"))
@@ -26,12 +28,18 @@ public abstract class ItemStackMixin {
 	}
 
 	@Inject(method = "applyDamage(ILnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Consumer;)V", at = @At("HEAD"))
-	private void everythingcopper$toolUse(int damage, LivingEntity player, Consumer<Item> onBreak, CallbackInfo callback) {
+	private void everythingcopper$captureDamage(int damage, LivingEntity player, Consumer<Item> onBreak, CallbackInfo callback) {
+		everythingcopper$previousDamage = ((ItemStack) (Object) this).getDamageValue();
+	}
+
+	@Inject(method = "applyDamage(ILnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Consumer;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;setDamageValue(I)V", shift = At.Shift.AFTER))
+	private void everythingcopper$toolDamage(int damage, LivingEntity player, Consumer<Item> onBreak, CallbackInfo callback) {
 		ServerLevel level = everythingcopper$durabilityLevel;
 		everythingcopper$durabilityLevel = null;
 		ItemStack stack = (ItemStack) (Object) this;
-		if (level != null && damage > stack.getDamageValue()) {
-			CopperWeathering.recordToolUse(stack, level);
+		int lostDurability = stack.getDamageValue() - everythingcopper$previousDamage;
+		if (level != null && lostDurability > 0) {
+			CopperWeathering.recordToolDamage(stack, level, lostDurability);
 		}
 	}
 }

@@ -13,9 +13,8 @@ import net.minecraft.world.level.Level;
 
 public final class CopperWeathering {
 	public static final int CHECK_INTERVAL = 20;
-	public static final int TOOL_USES_PER_STAGE = 32;
 	public static final int BUCKET_USES_PER_STAGE = 16;
-	private static final int PROGRESS_PER_USE = 5;
+	private static final int PROGRESS_PER_UNIT = 5;
 
 	private CopperWeathering() {
 	}
@@ -38,13 +37,14 @@ public final class CopperWeathering {
 			|| stack.is(ModItems.COPPER_SHEARS.get());
 	}
 
-	public static void recordToolUse(ItemStack stack, Level level) {
-		if (isTool(stack)) recordUse(stack, level, TOOL_USES_PER_STAGE);
+	public static void recordToolDamage(ItemStack stack, Level level, int lostDurability) {
+		// Five progress units per point make max durability the exact 20%-per-stage threshold.
+		if (isTool(stack)) recordProgress(stack, level, lostDurability, stack.getMaxDamage());
 	}
 
 	public static void recordBucketUse(ItemStack stack, Level level) {
 		if (stack.getItem() instanceof ICopperBucket) {
-			recordUse(stack, level, BUCKET_USES_PER_STAGE);
+			recordProgress(stack, level, 1, BUCKET_USES_PER_STAGE * PROGRESS_PER_UNIT);
 		}
 	}
 
@@ -54,15 +54,14 @@ public final class CopperWeathering {
 		return target;
 	}
 
-	private static void recordUse(ItemStack stack, Level level, int usesPerStage) {
-		if (level.isClientSide() || !ICopperItem.canAge(stack)) return;
-		int threshold = usesPerStage * PROGRESS_PER_USE;
+	private static void recordProgress(ItemStack stack, Level level, int units, int threshold) {
+		if (units <= 0 || threshold <= 0 || level.isClientSide() || !ICopperItem.canAge(stack)) return;
 		int previous = stack.getOrDefault(ModDataComponents.WEATHERING_PROGRESS.get(), 0);
-		int progress = Math.max(0, Math.min(previous, threshold - 1)) + (level.isRaining() ? 6 : 5);
-		if (progress >= threshold) {
+		long progress = Math.max(0, Math.min(previous, threshold - 1)) + (long) units * (level.isRaining() ? 6 : 5);
+		while (progress >= threshold && ICopperItem.canAge(stack)) {
 			ICopperItem.setAge(stack, WeatheringUtils.nextState(ICopperItem.getAge(stack)));
 			progress -= threshold;
 		}
-		stack.set(ModDataComponents.WEATHERING_PROGRESS.get(), progress);
+		stack.set(ModDataComponents.WEATHERING_PROGRESS.get(), ICopperItem.canAge(stack) ? (int) progress : 0);
 	}
 }

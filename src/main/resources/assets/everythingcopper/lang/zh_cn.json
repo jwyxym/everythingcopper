@@ -221,7 +221,7 @@
 	"tag.item.everythingcopper.buckets.powder_snow": "铜细雪桶",
 	"tag.item.everythingcopper.buckets.milk": "铜奶桶",
 	"tag.item.everythingcopper.milk_buckets": "奶桶",
-	"everythingcopper.recipe.natural_weathering": "铜护甲和马铠只在穿戴时逐渐锈化；铜工具每实际损耗耐久32次、铜桶每成功装入或倒出等交互16次推进一级。铜方块和矿车只在放置后逐渐锈化。雨天锈化加速20%，涂蜡后停止锈化。",
+	"everythingcopper.recipe.natural_weathering": "铜护甲和马铠只在穿戴时逐渐锈化；铜工具每实际损耗自身耐久上限的20%、铜桶每成功装入或倒出等交互16次推进一级。铜方块和矿车只在放置后逐渐锈化。雨天锈化加速20%，涂蜡后停止锈化。",
 	"item.everythingcopper.copper_spear": "铜矛",
 	"item.everythingcopper.unaffected_copper_spear": "铜矛",
 	"item.everythingcopper.exposed_copper_spear": "斑驳的铜矛",
