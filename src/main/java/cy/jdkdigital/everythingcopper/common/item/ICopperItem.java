@@ -6,8 +6,6 @@ import net.minecraft.world.item.Items;
 
 public interface ICopperItem
 {
-	float WEATHERING_CHANCE_PER_TICK = 0.00018962963F;
-
     static boolean isWaxed(ItemStack stack) {
 		if (stack.has(ModDataComponents.WAXED.get())) {
 			return Boolean.TRUE.equals(stack.get(ModDataComponents.WAXED.get()));

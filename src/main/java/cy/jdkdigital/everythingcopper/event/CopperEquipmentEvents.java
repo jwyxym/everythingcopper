@@ -78,7 +78,7 @@ public class CopperEquipmentEvents {
 		if (tool == null || tool.rules().isEmpty()) {
 			return;
 		}
-		HolderSet<Block> incorrectBlocks = BuiltInRegistries.BLOCK.getOrThrow(age.equals("oxidized")
+		HolderSet<Block> incorrectBlocks = BuiltInRegistries.BLOCK.getOrThrow(age.equals("oxidized") && !ICopperItem.isWaxed(stack)
 			? BlockTags.INCORRECT_FOR_STONE_TOOL : BlockTags.INCORRECT_FOR_IRON_TOOL);
 		if (!tool.rules().getFirst().blocks().equals(incorrectBlocks)) {
 			stack.set(DataComponents.TOOL, withPickaxeMiningLevel(tool, incorrectBlocks));

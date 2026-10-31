@@ -5,11 +5,13 @@ import cy.jdkdigital.everythingcopper.common.item.ICopperBucket;
 import cy.jdkdigital.everythingcopper.init.ModDataComponents;
 import cy.jdkdigital.everythingcopper.init.ModItems;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gamerules.GameRules;
 
 public final class CopperWeathering {
 	public static final int CHECK_INTERVAL = 20;
@@ -19,9 +21,15 @@ public final class CopperWeathering {
 	private CopperWeathering() {
 	}
 
-	public static float chancePerCheck(Level level) {
-		double ticks = CHECK_INTERVAL * (level.isRaining() ? 1.2D : 1.0D);
-		return (float) -Math.expm1(ticks * Math.log1p(-ICopperItem.WEATHERING_CHANCE_PER_TICK));
+	public static float chancePerCheck(ServerLevel level, String oxidationState) {
+		if (oxidationState.equals("oxidized")) return 0.0F;
+		// Match an isolated vanilla copper block: random selections from a 4096-block section,
+		// followed by its oxidation chance and the slower first-stage modifier.
+		double stageModifier = oxidationState.equals("unaffected") ? 0.75D : 1.0D;
+		double chancePerSelection = 0.05688889D * stageModifier / 4096.0D;
+		double selections = Math.max(0, level.getGameRules().get(GameRules.RANDOM_TICK_SPEED))
+			* (double) CHECK_INTERVAL * (level.isRaining() ? 1.2D : 1.0D);
+		return (float) -Math.expm1(selections * Math.log1p(-chancePerSelection));
 	}
 
 	public static boolean isWornArmor(ItemStack stack, EquipmentSlot slot) {
