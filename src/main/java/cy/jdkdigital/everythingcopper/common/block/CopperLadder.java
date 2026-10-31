@@ -26,7 +26,8 @@ public class CopperLadder extends LadderBlock implements IWeatheringBlock
 
     @Override
     public boolean isRandomlyTicking(BlockState blockState) {
-        return WeatheringCopper.getNext(blockState.getBlock()).isPresent();
+		// This flag is cached before oxidation data maps are loaded.
+		return super.isRandomlyTicking(blockState);
     }
 
     @Override
